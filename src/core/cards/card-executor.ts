@@ -19,6 +19,7 @@ import type {
 	ResolvedCard,
 } from "./card-definition.ts";
 import { resolveCard } from "./card-definition.ts";
+import { drawCards, exhaustCard } from "./deck-manager.ts";
 
 // ---------------------------------------------------------------------------
 // Public entry point
@@ -27,13 +28,14 @@ import { resolveCard } from "./card-definition.ts";
 /**
  * Executes a card: deducts energy, emits CARD_PLAYED, runs all effects in order.
  * Callers must verify the player has sufficient energy before calling.
+ * After this returns, callers are responsible for moving the card to discard/exhaust.
  */
 export function executeCard(
 	instance: CardInstance,
 	def: CardDefinition,
 	targetId: string | undefined,
 	ctx: CombatContext,
-	_rng: Rng, // reserved for probabilistic effects in future phases
+	rng: Rng,
 ): void {
 	const resolved = resolveCard(def, instance.upgradeLevel);
 	const player = ctx.getPlayer();
@@ -53,7 +55,7 @@ export function executeCard(
 	});
 
 	for (const effect of resolved.effects) {
-		applyEffect(effect, resolved, targetId, ctx, player);
+		applyEffect(effect, resolved, instance.instanceId, targetId, ctx, player, rng);
 	}
 }
 
@@ -109,9 +111,11 @@ function conditionMet(
 function applyEffect(
 	effect: CardEffect,
 	card: ResolvedCard,
+	instanceId: string,
 	targetId: string | undefined,
 	ctx: CombatContext,
 	player: Player,
+	rng: Rng,
 ): void {
 	if ("condition" in effect && effect.condition !== undefined) {
 		if (!conditionMet(effect.condition, targetId, ctx, player)) return;
@@ -199,10 +203,7 @@ function applyEffect(
 		}
 
 		case "drawCards": {
-			// DeckManager (Phase 2.2) will intercept these and fulfil actual draws.
-			for (let i = 0; i < effect.count; i++) {
-				ctx.emit({ type: "CARD_DRAWN", cardInstanceId: `pending-draw-${i}` });
-			}
+			drawCards(effect.count, ctx, rng);
 			break;
 		}
 
@@ -218,7 +219,7 @@ function applyEffect(
 		}
 
 		case "exhaust": {
-			ctx.emit({ type: "CARD_EXHAUSTED", cardInstanceId: "self" });
+			exhaustCard(instanceId, ctx);
 			break;
 		}
 	}

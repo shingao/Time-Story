@@ -414,6 +414,12 @@ describe("drawCards effect", () => {
 			effects: [{ kind: "drawCards", count: 3 }],
 		};
 		const ctx = makeCtx();
+		// Populate draw pile so the drawCards effect has cards to draw
+		ctx.state.drawPile = [
+			{ instanceId: "d1", definitionId: asCardId("dummy"), upgradeLevel: 0 },
+			{ instanceId: "d2", definitionId: asCardId("dummy"), upgradeLevel: 0 },
+			{ instanceId: "d3", definitionId: asCardId("dummy"), upgradeLevel: 0 },
+		];
 		executeCard(instance("acrobatics"), def, undefined, ctx, rng);
 		const drawEvents = ctx.log.filter((l) => l.event.type === "CARD_DRAWN");
 		expect(drawEvents).toHaveLength(3);
@@ -467,7 +473,7 @@ describe("gainEnergy effect", () => {
 // ---------------------------------------------------------------------------
 
 describe("exhaust effect", () => {
-	it("emits CARD_EXHAUSTED", () => {
+	it("emits CARD_EXHAUSTED and moves card to exhaust pile", () => {
 		const def: CardDefinition = {
 			id: asCardId("offering"),
 			name: "Offering",
@@ -479,9 +485,13 @@ describe("exhaust effect", () => {
 			target: "none",
 			effects: [{ kind: "exhaust" }],
 		};
+		const inst = instance("offering");
 		const ctx = makeCtx();
-		executeCard(instance("offering"), def, undefined, ctx, rng);
+		ctx.state.hand.push(inst); // card must be in hand to be exhausted
+		executeCard(inst, def, undefined, ctx, rng);
 		expect(ctx.log.some((l) => l.event.type === "CARD_EXHAUSTED")).toBe(true);
+		expect(ctx.state.exhaustPile).toHaveLength(1);
+		expect(ctx.state.hand).toHaveLength(0);
 	});
 });
 
