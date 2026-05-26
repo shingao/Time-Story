@@ -133,6 +133,7 @@ function applyEffect(
 				targetId: target.id,
 				amount,
 				damageTypes: effect.damageTypes ?? card.types,
+				damageSource: "card",
 				cancellable: true,
 			});
 			break;

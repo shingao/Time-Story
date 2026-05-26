@@ -139,6 +139,40 @@ Single `Rng` instance per run, seeded once at run start. Same seed = identical r
 ### Versioned persistence
 Zustand `persist` middleware with explicit `version` and `migrate` function. When schemas change, old saves migrate, never crash.
 
+### Turn flow hooks — default handlers registered at combat start
+
+`startCombat()` calls `registerDefaultHandlers(ctx)` which installs two baseline handlers:
+
+| Handler id | Priority | Event | Behaviour |
+|---|---|---|---|
+| `default:damage-applier` | 9000 (last) | `DAMAGE_INTENDED` | Calls `takeDamage`, emits `DAMAGE_DEALT`, emits `ENTITY_DEFEATED` if target dies |
+| `default:block-reset` | 1000 (late) | `TURN_START` | Zeroes the entity's `block` unless `ctx.flags["skipBlockReset"] === true` |
+
+**Priority convention**: lower number runs first. Damage-modifying relics register at < 9000 so they fire before the applier. Relics that preserve block register a handler at < 1000 that sets `ctx.flags["skipBlockReset"] = true`.
+
+**Player turn start order** (inside `beginPlayerTurn`):
+1. `tickBuffs(player, ctx)` — decrement duration-limited buffs, emit `BUFF_EXPIRED`
+2. `tickStatuses(player, ctx)` — intensity statuses deal damage via `DAMAGE_INTENDED`, then decay
+3. Early-exit check (`checkWinLoss`) in case player died from self-inflicted status
+4. Refill energy to `maxEnergy`, emit `ENERGY_CHANGED`
+5. `drawCards(drawPerTurn, ctx, rng)`
+6. `emit TURN_START` — block-reset handler fires here
+
+**Enemy turn order** (inside `endPlayerTurn`, per enemy):
+1. `tickBuffs(enemy, ctx)`
+2. `tickStatuses(enemy, ctx)`
+3. Skip if enemy died from status; check `checkAndFinalise`
+4. `emit TURN_START(enemy)` — block-reset fires
+5. `executeEnemyIntent(enemy, ctx)`
+6. `checkWinLoss` — immediate LOSE if player died
+7. `emit TURN_END(enemy)`
+8. `rollIntent` + `emit ENEMY_INTENT_RESOLVED` — telegraphed for next player turn
+
+**Burn / Poison tick mechanics**:
+- Damage = `stacks` HP, travels through `DAMAGE_INTENDED → DAMAGE_DEALT` pipeline
+- `damageSource: "status"` — does NOT count as player damage for "damage dealt by player" relics
+- Stack decays by 1 per tick; removed at 0
+
 ---
 
 ## ⚙️ Path Aliases

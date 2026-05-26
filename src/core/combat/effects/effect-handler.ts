@@ -5,6 +5,13 @@ import type { GameEvent } from "./game-events.ts";
 export type { CardInstance } from "@core/cards/card-definition.ts";
 
 // ---------------------------------------------------------------------------
+// FSM phase — serialisable; stored on CombatContext (not CombatState) so
+// existing CombatState fixtures in tests don't need to change.
+// ---------------------------------------------------------------------------
+
+export type CombatPhase = "PLAYER_TURN" | "ENEMY_TURN" | "WIN" | "LOSE";
+
+// ---------------------------------------------------------------------------
 // Combat state bag — everything handlers may need to read or mutate
 // ---------------------------------------------------------------------------
 
@@ -34,6 +41,7 @@ export interface EffectHandler {
 	 * Return a (modified) GameEvent to continue the chain.
 	 * Return null to attempt cancellation — only honoured if the event has
 	 * `cancellable: true`; otherwise treated as a pass-through.
+	 * For non-cancellable events, a null return is treated as pass-through.
 	 */
 	handle(event: GameEvent, ctx: CombatContext): GameEvent | null;
 }
@@ -55,6 +63,20 @@ export interface LogEntry {
 export class CombatContext {
 	readonly state: CombatState;
 	readonly log: LogEntry[] = [];
+
+	/** FSM phase — mutated by the turn engine; not part of CombatState so
+	 *  existing test fixtures creating CombatState objects don't need updating. */
+	phase: CombatPhase = "PLAYER_TURN";
+
+	/** Overall combat turn counter (increments after each enemy turn completes). */
+	turnNumber: number = 0;
+
+	/**
+	 * Mutable flags for handler-to-handler communication within a single
+	 * event chain.  Convention: flag keys are `"handler-id:flag-name"`.
+	 * Example: default block-reset handler checks `flags["skipBlockReset"]`.
+	 */
+	readonly flags: Record<string, boolean> = {};
 
 	private readonly handlersByType = new Map<string, EffectHandler[]>();
 	private tick = 0;

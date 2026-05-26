@@ -1,0 +1,23 @@
+{
+  "id": "caterpie",
+  "name": "Caterpie",
+  "types": ["bug"],
+  "hp": { "min": 14, "max": 17 },
+  "tier": "normal",
+  "intents": [
+    { "weight": 50, "intent": { "kind": "attack", "damage": 5, "hits": 1 } },
+    {
+      "weight": 30,
+      "intent": {
+        "kind": "debuff",
+        "statusId": "poison",
+        "stacks": 2,
+        "behavior": "intensity"
+      }
+    },
+    {
+      "weight": 20,
+      "intent": { "kind": "buff", "buffId": "focus", "stacks": 1 }
+    }
+  ]
+}

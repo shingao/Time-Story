@@ -9,6 +9,7 @@ export type CardId = string & { readonly __brand: "CardId" };
 export type RelicId = string & { readonly __brand: "RelicId" };
 export type StatusId = string & { readonly __brand: "StatusId" };
 export type BuffId = string & { readonly __brand: "BuffId" };
+export type EnemyId = string & { readonly __brand: "EnemyId" };
 
 export function asEntityId(id: string): EntityId {
 	return id as EntityId;
@@ -25,6 +26,9 @@ export function asStatusId(id: string): StatusId {
 export function asBuffId(id: string): BuffId {
 	return id as BuffId;
 }
+export function asEnemyId(id: string): EnemyId {
+	return id as EnemyId;
+}
 
 // ---------------------------------------------------------------------------
 // Status
@@ -34,13 +38,13 @@ export type StatusBehavior = "duration" | "intensity";
 
 // All PMD-flavored status conditions
 export type KnownStatusId =
-	| "burn" // intensity — stacks increase damage dealt each turn
-	| "poison" // intensity — stacks deal damage each turn
-	| "paralyze" // duration — chance to skip turn, reduces speed
+	| "burn" // intensity — deals stacks damage per tick, decays by 1
+	| "poison" // intensity — deals stacks damage per tick, decays by 1
+	| "paralyze" // duration — chance to skip turn
 	| "sleep" // duration — skip turns, cleared on hit
 	| "frozen" // duration — skip turns, chance to thaw each turn
 	| "confused" // duration — chance to hurt self instead of target
-	| "doubt"; // PMD-specific intensity — lowers Special Attack
+	| "doubt"; // PMD-specific intensity — lowers Special Attack (no damage tick)
 
 export interface Status {
 	readonly id: StatusId;
@@ -61,6 +65,8 @@ export type KnownBuffId =
 export interface Buff {
 	readonly id: BuffId;
 	stacks: number;
+	// undefined = permanent (lasts entire combat); positive = turns remaining
+	duration?: number;
 }
 
 // ---------------------------------------------------------------------------
@@ -68,11 +74,53 @@ export interface Buff {
 // ---------------------------------------------------------------------------
 
 export type Intent =
-	| { readonly kind: "attack"; readonly damage: number; readonly times: number }
+	| {
+			readonly kind: "attack";
+			readonly damage: number;
+			readonly hits: number; // number of separate hits (renamed from times)
+			readonly appliesStatus?: {
+				readonly statusId: StatusId;
+				readonly stacks: number;
+				readonly behavior: StatusBehavior;
+			};
+	  }
 	| { readonly kind: "buff"; readonly buffId: BuffId; readonly stacks: number }
-	| { readonly kind: "debuff"; readonly statusId: StatusId; readonly stacks: number }
+	| {
+			readonly kind: "debuff";
+			readonly statusId: StatusId;
+			readonly stacks: number;
+			readonly behavior: StatusBehavior;
+	  }
 	| { readonly kind: "defend"; readonly block: number }
 	| { readonly kind: "unknown" }; // used before AI has rolled
+
+/** Pure-data display string for UI telegraphing — no React dependency. */
+export function getIntentDisplayText(intent: Intent): string {
+	switch (intent.kind) {
+		case "attack":
+			return intent.hits > 1
+				? `Attack ${intent.damage}×${intent.hits}`
+				: `Attack ${intent.damage}`;
+		case "buff":
+			return `Buff ${String(intent.buffId)} +${intent.stacks}`;
+		case "debuff":
+			return `Debuff ${String(intent.statusId)} ×${intent.stacks}`;
+		case "defend":
+			return `Defend ${intent.block}`;
+		case "unknown":
+			return "???";
+	}
+}
+
+// ---------------------------------------------------------------------------
+// Enemy AI state — per-enemy tracking for intent rolling (serialisable)
+// ---------------------------------------------------------------------------
+
+export interface EnemyAiState {
+	lastIntentKind: Intent["kind"] | null;
+	repeatCount: number;
+	cooldowns: Record<number, number>; // intent-pattern index → turns remaining
+}
 
 // ---------------------------------------------------------------------------
 // Corruption (reserved — Distortion mechanic, Phase 5)
@@ -106,6 +154,8 @@ export interface Player extends Combatant {
 
 export interface Enemy extends Combatant {
 	intent: Intent;
+	definitionId: EnemyId; // links back to EnemyDefinition for AI lookup
+	aiState: EnemyAiState;
 	readonly corrupted?: CorruptionData; // reserved — never spawned in MVP
 }
 
@@ -148,6 +198,7 @@ export function createPlayer(params: CreatePlayerParams): Player {
 }
 
 export interface CreateEnemyParams extends CreateCombatantParams {
+	readonly definitionId?: EnemyId; // optional; defaults to "unknown" for test fixtures
 	readonly corrupted?: CorruptionData;
 }
 
@@ -155,6 +206,8 @@ export function createEnemy(params: CreateEnemyParams): Enemy {
 	return {
 		...createCombatant(params),
 		intent: { kind: "unknown" },
+		definitionId: params.definitionId ?? asEnemyId("unknown"),
+		aiState: { lastIntentKind: null, repeatCount: 0, cooldowns: {} },
 		...(params.corrupted !== undefined ? { corrupted: params.corrupted } : {}),
 	};
 }

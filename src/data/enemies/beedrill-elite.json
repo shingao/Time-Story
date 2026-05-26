@@ -1,0 +1,25 @@
+{
+  "id": "beedrill-elite",
+  "name": "Beedrill",
+  "types": ["bug", "poison"],
+  "hp": { "min": 32, "max": 38 },
+  "tier": "elite",
+  "intents": [
+    { "weight": 40, "intent": { "kind": "attack", "damage": 7, "hits": 1 } },
+    {
+      "weight": 25,
+      "intent": {
+        "kind": "attack",
+        "damage": 3,
+        "hits": 2,
+        "appliesStatus": { "statusId": "poison", "stacks": 2, "behavior": "intensity" }
+      }
+    },
+    { "weight": 20, "intent": { "kind": "buff", "buffId": "strength", "stacks": 1 } },
+    { "weight": 15, "intent": { "kind": "defend", "block": 8 } }
+  ],
+  "aiRules": [
+    { "kind": "no_repeat_in_a_row", "maxRepeats": 2 },
+    { "kind": "forced_finisher", "intentIndex": 1, "whenHpBelow": 0.3 }
+  ]
+}

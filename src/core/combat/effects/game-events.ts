@@ -1,5 +1,15 @@
 import type { PokemonType } from "@core/types/pokemon-types.ts";
-import type { CardId, EntityId, Status, StatusId } from "../entity.ts";
+import type { BuffId, CardId, EntityId, Intent, Status, StatusId } from "../entity.ts";
+
+// ---------------------------------------------------------------------------
+// DamageSource discriminator — lets relics key on WHY damage occurred
+// ---------------------------------------------------------------------------
+
+export type DamageSource =
+	| "card" // player card effect
+	| "status" // status tick (Burn, Poison) — source is the afflicted entity itself
+	| "relic" // relic passive damage
+	| "enemy"; // enemy intent execution
 
 // ---------------------------------------------------------------------------
 // GameEvent — every combat action is expressed as one of these
@@ -19,6 +29,7 @@ export type GameEvent =
 			readonly targetId: EntityId;
 			readonly amount: number;
 			readonly damageTypes: readonly PokemonType[];
+			readonly damageSource: DamageSource;
 			readonly cancellable: true;
 	  }
 	| {
@@ -54,6 +65,17 @@ export type GameEvent =
 			readonly targetId: EntityId;
 			readonly buffId: string;
 			readonly stacks: number;
+	  }
+	| {
+			readonly type: "BUFF_EXPIRED";
+			readonly entityId: EntityId;
+			readonly buffId: BuffId;
+	  }
+	// Enemy AI
+	| {
+			readonly type: "ENEMY_INTENT_RESOLVED";
+			readonly enemyId: EntityId;
+			readonly intent: Intent;
 	  }
 	// Entity lifecycle
 	| { readonly type: "ENTITY_DEFEATED"; readonly entityId: EntityId }
