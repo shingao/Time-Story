@@ -1,15 +1,8 @@
-import type { CardId, Combatant, Enemy, EntityId, Player } from "../entity.ts";
+import type { Combatant, Enemy, EntityId, Player } from "../entity.ts";
 import type { GameEvent } from "./game-events.ts";
 
-// ---------------------------------------------------------------------------
-// Minimal card instance — expanded to full CardDefinition in Phase 2
-// ---------------------------------------------------------------------------
-
-export interface CardInstance {
-	readonly instanceId: string;
-	readonly definitionId: CardId;
-	readonly upgradeLevel: 0 | 1 | 2;
-}
+// CardInstance lives in card-definition.ts (canonical); re-exported here for back-compat.
+export type { CardInstance } from "@core/cards/card-definition.ts";
 
 // ---------------------------------------------------------------------------
 // Combat state bag — everything handlers may need to read or mutate
