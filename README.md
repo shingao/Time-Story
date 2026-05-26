@@ -1,73 +1,54 @@
-# React + TypeScript + Vite
+# Pokémon Mystery Spire
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A roguelike deckbuilder fan game combining **Slay the Spire**'s deckbuilding mechanics with the atmosphere, narrative, and world of **Pokémon Mystery Dungeon: Explorers of Sky**.
 
-Currently, two official plugins are available:
+> ⚠️ **Fan Project Notice**: PMD sprites, music, and sound effects are © Nintendo / Spike Chunsoft. This is a non-commercial fan work for personal/educational use only. Not affiliated with or endorsed by Nintendo or Spike Chunsoft.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## Setup
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Scripts
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+| Command | Description |
+|---|---|
+| `npm run dev` | Start dev server |
+| `npm run build` | Production build |
+| `npm run test` | Run tests (watch mode) |
+| `npm run test:run` | Run tests (CI mode) |
+| `npm run test:coverage` | Coverage report |
+| `npm run check` | Biome lint + format (auto-fix) |
+| `npm run typecheck` | TypeScript type check |
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Tech Stack
+
+- **Vite 8** + **React 19** + **TypeScript 6** (strict)
+- **Tailwind CSS 4** (PMD-inspired theme)
+- **Zustand 5** (state management)
+- **Phaser 3.90** (combat visuals — cosmetic only)
+- **Framer Motion 12** (card animations)
+- **Howler 2** (audio)
+- **Zod 4** (data validation)
+- **Vitest 4** + **@testing-library/react** (testing)
+- **Biome 2** (linting + formatting)
+
+## Project Structure
+
 ```
+src/
+├── core/       # Pure game logic (no React, no Phaser)
+├── game/       # Phaser scenes & sprites (cosmetic only)
+├── ui/         # React components
+├── state/      # Zustand stores
+├── data/       # JSON card/enemy/relic/event definitions
+├── assets/     # sprites, audio, fonts
+├── narrative/  # dialogue manager, partner system
+└── audio/      # Howler-based audio manager
+```
+
+See `CLAUDE.md` for full conventions and architecture documentation.
