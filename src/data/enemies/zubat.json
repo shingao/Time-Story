@@ -1,23 +1,21 @@
 {
-  "id": "zubat",
-  "name": "Zubat",
-  "types": ["poison", "flying"],
-  "hp": { "min": 12, "max": 15 },
-  "tier": "normal",
-  "intents": [
-    { "weight": 60, "intent": { "kind": "attack", "damage": 2, "hits": 3 } },
-    {
-      "weight": 25,
-      "intent": {
-        "kind": "attack",
-        "damage": 4,
-        "hits": 1,
-        "appliesStatus": { "statusId": "poison", "stacks": 1, "behavior": "intensity" }
-      }
-    },
-    { "weight": 15, "intent": { "kind": "defend", "block": 4 } }
-  ],
-  "aiRules": [
-    { "kind": "no_repeat_in_a_row", "maxRepeats": 2 }
-  ]
+	"id": "zubat",
+	"name": "Zubat",
+	"types": ["poison", "flying"],
+	"hp": { "min": 12, "max": 15 },
+	"tier": "normal",
+	"intents": [
+		{ "weight": 60, "intent": { "kind": "attack", "damage": 2, "hits": 3 } },
+		{
+			"weight": 25,
+			"intent": {
+				"kind": "attack",
+				"damage": 4,
+				"hits": 1,
+				"appliesStatus": { "statusId": "poison", "stacks": 1, "behavior": "intensity" }
+			}
+		},
+		{ "weight": 15, "intent": { "kind": "defend", "block": 4 } }
+	],
+	"aiRules": [{ "kind": "no_repeat_in_a_row", "maxRepeats": 2 }]
 }

@@ -1,19 +1,17 @@
 {
-  "id": "mankey",
-  "name": "Mankey",
-  "types": ["fighting"],
-  "hp": { "min": 16, "max": 20 },
-  "tier": "normal",
-  "intents": [
-    { "weight": 55, "intent": { "kind": "attack", "damage": 6, "hits": 1 } },
-    { "weight": 30, "intent": { "kind": "buff", "buffId": "strength", "stacks": 2 } },
-    {
-      "weight": 15,
-      "intent": { "kind": "attack", "damage": 10, "hits": 1 },
-      "condition": { "kind": "hp_below", "threshold": 0.5 }
-    }
-  ],
-  "aiRules": [
-    { "kind": "forced_opener", "intentIndex": 1 }
-  ]
+	"id": "mankey",
+	"name": "Mankey",
+	"types": ["fighting"],
+	"hp": { "min": 16, "max": 20 },
+	"tier": "normal",
+	"intents": [
+		{ "weight": 55, "intent": { "kind": "attack", "damage": 6, "hits": 1 } },
+		{ "weight": 30, "intent": { "kind": "buff", "buffId": "strength", "stacks": 2 } },
+		{
+			"weight": 15,
+			"intent": { "kind": "attack", "damage": 10, "hits": 1 },
+			"condition": { "kind": "hp_below", "threshold": 0.5 }
+		}
+	],
+	"aiRules": [{ "kind": "forced_opener", "intentIndex": 1 }]
 }

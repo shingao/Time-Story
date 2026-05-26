@@ -98,9 +98,7 @@ export type Intent =
 export function getIntentDisplayText(intent: Intent): string {
 	switch (intent.kind) {
 		case "attack":
-			return intent.hits > 1
-				? `Attack ${intent.damage}×${intent.hits}`
-				: `Attack ${intent.damage}`;
+			return intent.hits > 1 ? `Attack ${intent.damage}×${intent.hits}` : `Attack ${intent.damage}`;
 		case "buff":
 			return `Buff ${String(intent.buffId)} +${intent.stacks}`;
 		case "debuff":

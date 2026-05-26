@@ -1,14 +1,12 @@
 {
-  "id": "pidgey",
-  "name": "Pidgey",
-  "types": ["normal", "flying"],
-  "hp": { "min": 10, "max": 13 },
-  "tier": "normal",
-  "intents": [
-    { "weight": 70, "intent": { "kind": "attack", "damage": 4, "hits": 1 } },
-    { "weight": 30, "intent": { "kind": "attack", "damage": 2, "hits": 2 } }
-  ],
-  "aiRules": [
-    { "kind": "no_repeat_in_a_row", "maxRepeats": 2 }
-  ]
+	"id": "pidgey",
+	"name": "Pidgey",
+	"types": ["normal", "flying"],
+	"hp": { "min": 10, "max": 13 },
+	"tier": "normal",
+	"intents": [
+		{ "weight": 70, "intent": { "kind": "attack", "damage": 4, "hits": 1 } },
+		{ "weight": 30, "intent": { "kind": "attack", "damage": 2, "hits": 2 } }
+	],
+	"aiRules": [{ "kind": "no_repeat_in_a_row", "maxRepeats": 2 }]
 }

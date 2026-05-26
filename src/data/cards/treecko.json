@@ -1,306 +1,283 @@
 [
-  {
-    "id": "pound",
-    "name": "Pound",
-    "description": "Deal 6 damage.",
-    "types": ["normal"],
-    "category": "attack",
-    "rarity": "starter",
-    "energyCost": 1,
-    "target": "enemy",
-    "effects": [{ "kind": "damage", "amount": 6 }],
-    "upgradeMap": {
-      "name": "Pound+",
-      "description": "Deal 9 damage.",
-      "effects": [{ "kind": "damage", "amount": 9 }]
-    },
-    "tags": ["treecko"]
-  },
-  {
-    "id": "harden",
-    "name": "Harden",
-    "description": "Gain 5 Block.",
-    "types": ["normal"],
-    "category": "skill",
-    "rarity": "starter",
-    "energyCost": 1,
-    "target": "self",
-    "effects": [{ "kind": "block", "amount": 5 }],
-    "upgradeMap": {
-      "name": "Harden+",
-      "description": "Gain 8 Block.",
-      "effects": [{ "kind": "block", "amount": 8 }]
-    },
-    "tags": ["treecko"]
-  },
-  {
-    "id": "absorb",
-    "name": "Absorb",
-    "description": "Deal 5 Grass damage. Heal 3 HP.",
-    "types": ["grass"],
-    "category": "attack",
-    "rarity": "starter",
-    "energyCost": 1,
-    "target": "enemy",
-    "effects": [
-      { "kind": "damage", "amount": 5 },
-      { "kind": "heal", "amount": 3 }
-    ],
-    "upgradeMap": {
-      "name": "Absorb+",
-      "description": "Deal 8 Grass damage. Heal 3 HP.",
-      "effects": [
-        { "kind": "damage", "amount": 8 },
-        { "kind": "heal", "amount": 3 }
-      ]
-    },
-    "tags": ["treecko"]
-  },
-  {
-    "id": "quick-attack",
-    "name": "Quick Attack",
-    "description": "Deal 5 damage. Draw 1 card.",
-    "types": ["normal"],
-    "category": "attack",
-    "rarity": "common",
-    "energyCost": 0,
-    "target": "enemy",
-    "effects": [
-      { "kind": "damage", "amount": 5 },
-      { "kind": "drawCards", "count": 1 }
-    ],
-    "upgradeMap": {
-      "name": "Quick Attack+",
-      "description": "Deal 5 damage. Draw 2 cards.",
-      "effects": [
-        { "kind": "damage", "amount": 5 },
-        { "kind": "drawCards", "count": 2 }
-      ]
-    },
-    "tags": ["treecko"]
-  },
-  {
-    "id": "leaf-blade",
-    "name": "Leaf Blade",
-    "description": "Deal 12 Grass damage. If you have 3+ cards in hand, deal 4 more.",
-    "types": ["grass"],
-    "category": "attack",
-    "rarity": "common",
-    "energyCost": 1,
-    "target": "enemy",
-    "effects": [
-      { "kind": "damage", "amount": 12 },
-      {
-        "kind": "damage",
-        "amount": 4,
-        "condition": { "when": "handSizeAtLeast", "count": 3 }
-      }
-    ],
-    "upgradeMap": {
-      "name": "Leaf Blade+",
-      "description": "Deal 15 Grass damage. If you have 3+ cards in hand, deal 6 more.",
-      "effects": [
-        { "kind": "damage", "amount": 15 },
-        {
-          "kind": "damage",
-          "amount": 6,
-          "condition": { "when": "handSizeAtLeast", "count": 3 }
-        }
-      ]
-    },
-    "tags": ["treecko"]
-  },
-  {
-    "id": "agility",
-    "name": "Agility",
-    "description": "Draw 3 cards.",
-    "types": ["normal"],
-    "category": "skill",
-    "rarity": "common",
-    "energyCost": 0,
-    "target": "none",
-    "effects": [{ "kind": "drawCards", "count": 3 }],
-    "upgradeMap": {
-      "name": "Agility+",
-      "description": "Draw 4 cards.",
-      "effects": [{ "kind": "drawCards", "count": 4 }]
-    },
-    "tags": ["treecko"]
-  },
-  {
-    "id": "synthesis",
-    "name": "Synthesis",
-    "description": "Heal 12 HP.",
-    "types": ["grass"],
-    "category": "skill",
-    "rarity": "common",
-    "energyCost": 1,
-    "target": "self",
-    "effects": [{ "kind": "heal", "amount": 12 }],
-    "upgradeMap": {
-      "name": "Synthesis+",
-      "description": "Heal 16 HP.",
-      "effects": [{ "kind": "heal", "amount": 16 }]
-    },
-    "tags": ["treecko"]
-  },
-  {
-    "id": "screech",
-    "name": "Screech",
-    "description": "Apply 3 Doubt to the enemy.",
-    "types": ["normal"],
-    "category": "skill",
-    "rarity": "uncommon",
-    "energyCost": 1,
-    "target": "enemy",
-    "effects": [{ "kind": "applyStatus", "statusId": "doubt", "behavior": "intensity", "stacks": 3 }],
-    "upgradeMap": {
-      "name": "Screech+",
-      "description": "Apply 4 Doubt to the enemy.",
-      "effects": [{ "kind": "applyStatus", "statusId": "doubt", "behavior": "intensity", "stacks": 4 }]
-    },
-    "tags": ["treecko"]
-  },
-  {
-    "id": "giga-drain",
-    "name": "Giga Drain",
-    "description": "Deal 8 Grass damage. Heal 5 HP.",
-    "types": ["grass"],
-    "category": "attack",
-    "rarity": "uncommon",
-    "energyCost": 1,
-    "target": "enemy",
-    "effects": [
-      { "kind": "damage", "amount": 8 },
-      { "kind": "heal", "amount": 5 }
-    ],
-    "upgradeMap": {
-      "name": "Giga Drain+",
-      "description": "Deal 10 Grass damage. Heal 8 HP.",
-      "effects": [
-        { "kind": "damage", "amount": 10 },
-        { "kind": "heal", "amount": 8 }
-      ]
-    },
-    "tags": ["treecko"]
-  },
-  {
-    "id": "energy-ball",
-    "name": "Energy Ball",
-    "description": "Deal 14 Grass damage.",
-    "types": ["grass"],
-    "category": "attack",
-    "rarity": "common",
-    "energyCost": 2,
-    "target": "enemy",
-    "effects": [{ "kind": "damage", "amount": 14 }],
-    "upgradeMap": {
-      "name": "Energy Ball+",
-      "description": "Deal 14 Grass damage. Draw 1 card.",
-      "effects": [
-        { "kind": "damage", "amount": 14 },
-        { "kind": "drawCards", "count": 1 }
-      ]
-    },
-    "tags": ["treecko"]
-  },
-  {
-    "id": "iron-tail",
-    "name": "Iron Tail",
-    "description": "Deal 8 Steel damage.",
-    "types": ["steel"],
-    "category": "attack",
-    "rarity": "common",
-    "energyCost": 1,
-    "target": "enemy",
-    "effects": [{ "kind": "damage", "amount": 8 }],
-    "upgradeMap": {
-      "name": "Iron Tail+",
-      "description": "Deal 11 Steel damage.",
-      "effects": [{ "kind": "damage", "amount": 11 }]
-    },
-    "tags": ["treecko"]
-  },
-  {
-    "id": "bullet-seed",
-    "name": "Bullet Seed",
-    "description": "Deal 3 Grass damage 3 times.",
-    "types": ["grass"],
-    "category": "attack",
-    "rarity": "uncommon",
-    "energyCost": 1,
-    "target": "enemy",
-    "effects": [
-      { "kind": "damage", "amount": 3 },
-      { "kind": "damage", "amount": 3 },
-      { "kind": "damage", "amount": 3 }
-    ],
-    "upgradeMap": {
-      "name": "Bullet Seed+",
-      "description": "Deal 4 Grass damage 3 times.",
-      "effects": [
-        { "kind": "damage", "amount": 4 },
-        { "kind": "damage", "amount": 4 },
-        { "kind": "damage", "amount": 4 }
-      ]
-    },
-    "tags": ["treecko"]
-  },
-  {
-    "id": "focus-energy",
-    "name": "Focus Energy",
-    "description": "Gain 2 Focus.",
-    "types": ["normal"],
-    "category": "skill",
-    "rarity": "uncommon",
-    "energyCost": 1,
-    "target": "self",
-    "effects": [{ "kind": "applyBuff", "buffId": "focus", "stacks": 2, "toSelf": true }],
-    "upgradeMap": {
-      "name": "Focus Energy+",
-      "description": "Gain 3 Focus.",
-      "effects": [{ "kind": "applyBuff", "buffId": "focus", "stacks": 3, "toSelf": true }]
-    },
-    "tags": ["treecko"]
-  },
-  {
-    "id": "x-scissor",
-    "name": "X-Scissor",
-    "description": "Deal 15 Bug damage.",
-    "types": ["bug"],
-    "category": "attack",
-    "rarity": "uncommon",
-    "energyCost": 2,
-    "target": "enemy",
-    "effects": [{ "kind": "damage", "amount": 15, "damageTypes": ["bug"] }],
-    "upgradeMap": {
-      "name": "X-Scissor+",
-      "description": "Deal 20 Bug damage.",
-      "effects": [{ "kind": "damage", "amount": 20, "damageTypes": ["bug"] }]
-    },
-    "tags": ["treecko"]
-  },
-  {
-    "id": "leaf-storm",
-    "name": "Leaf Storm",
-    "description": "Deal 20 Grass damage. Draw 2 cards.",
-    "types": ["grass"],
-    "category": "attack",
-    "rarity": "rare",
-    "energyCost": 2,
-    "target": "enemy",
-    "effects": [
-      { "kind": "damage", "amount": 20 },
-      { "kind": "drawCards", "count": 2 }
-    ],
-    "upgradeMap": {
-      "name": "Leaf Storm+",
-      "description": "Deal 24 Grass damage. Draw 2 cards.",
-      "effects": [
-        { "kind": "damage", "amount": 24 },
-        { "kind": "drawCards", "count": 2 }
-      ]
-    },
-    "tags": ["treecko"]
-  }
+	{
+		"id": "pound",
+		"name": "Pound",
+		"description": "Deal 6 damage.",
+		"types": ["normal"],
+		"category": "attack",
+		"rarity": "starter",
+		"energyCost": 1,
+		"target": "enemy",
+		"effects": [{ "kind": "damage", "amount": 6 }],
+		"upgradeMap": {
+			"name": "Pound+",
+			"description": "Deal 9 damage.",
+			"effects": [{ "kind": "damage", "amount": 9 }]
+		},
+		"tags": ["treecko"]
+	},
+	{
+		"id": "harden",
+		"name": "Harden",
+		"description": "Gain 5 Block.",
+		"types": ["normal"],
+		"category": "skill",
+		"rarity": "starter",
+		"energyCost": 1,
+		"target": "self",
+		"effects": [{ "kind": "block", "amount": 5 }],
+		"upgradeMap": {
+			"name": "Harden+",
+			"description": "Gain 8 Block.",
+			"effects": [{ "kind": "block", "amount": 8 }]
+		},
+		"tags": ["treecko"]
+	},
+	{
+		"id": "absorb",
+		"name": "Absorb",
+		"description": "Deal 5 Grass damage. Heal 3 HP.",
+		"types": ["grass"],
+		"category": "attack",
+		"rarity": "starter",
+		"energyCost": 1,
+		"target": "enemy",
+		"effects": [{ "kind": "damage", "amount": 5 }, { "kind": "heal", "amount": 3 }],
+		"upgradeMap": {
+			"name": "Absorb+",
+			"description": "Deal 8 Grass damage. Heal 3 HP.",
+			"effects": [{ "kind": "damage", "amount": 8 }, { "kind": "heal", "amount": 3 }]
+		},
+		"tags": ["treecko"]
+	},
+	{
+		"id": "quick-attack",
+		"name": "Quick Attack",
+		"description": "Deal 5 damage. Draw 1 card.",
+		"types": ["normal"],
+		"category": "attack",
+		"rarity": "common",
+		"energyCost": 0,
+		"target": "enemy",
+		"effects": [{ "kind": "damage", "amount": 5 }, { "kind": "drawCards", "count": 1 }],
+		"upgradeMap": {
+			"name": "Quick Attack+",
+			"description": "Deal 5 damage. Draw 2 cards.",
+			"effects": [{ "kind": "damage", "amount": 5 }, { "kind": "drawCards", "count": 2 }]
+		},
+		"tags": ["treecko"]
+	},
+	{
+		"id": "leaf-blade",
+		"name": "Leaf Blade",
+		"description": "Deal 12 Grass damage. If you have 3+ cards in hand, deal 4 more.",
+		"types": ["grass"],
+		"category": "attack",
+		"rarity": "common",
+		"energyCost": 1,
+		"target": "enemy",
+		"effects": [
+			{ "kind": "damage", "amount": 12 },
+			{
+				"kind": "damage",
+				"amount": 4,
+				"condition": { "when": "handSizeAtLeast", "count": 3 }
+			}
+		],
+		"upgradeMap": {
+			"name": "Leaf Blade+",
+			"description": "Deal 15 Grass damage. If you have 3+ cards in hand, deal 6 more.",
+			"effects": [
+				{ "kind": "damage", "amount": 15 },
+				{
+					"kind": "damage",
+					"amount": 6,
+					"condition": { "when": "handSizeAtLeast", "count": 3 }
+				}
+			]
+		},
+		"tags": ["treecko"]
+	},
+	{
+		"id": "agility",
+		"name": "Agility",
+		"description": "Draw 3 cards.",
+		"types": ["normal"],
+		"category": "skill",
+		"rarity": "common",
+		"energyCost": 0,
+		"target": "none",
+		"effects": [{ "kind": "drawCards", "count": 3 }],
+		"upgradeMap": {
+			"name": "Agility+",
+			"description": "Draw 4 cards.",
+			"effects": [{ "kind": "drawCards", "count": 4 }]
+		},
+		"tags": ["treecko"]
+	},
+	{
+		"id": "synthesis",
+		"name": "Synthesis",
+		"description": "Heal 12 HP.",
+		"types": ["grass"],
+		"category": "skill",
+		"rarity": "common",
+		"energyCost": 1,
+		"target": "self",
+		"effects": [{ "kind": "heal", "amount": 12 }],
+		"upgradeMap": {
+			"name": "Synthesis+",
+			"description": "Heal 16 HP.",
+			"effects": [{ "kind": "heal", "amount": 16 }]
+		},
+		"tags": ["treecko"]
+	},
+	{
+		"id": "screech",
+		"name": "Screech",
+		"description": "Apply 3 Doubt to the enemy.",
+		"types": ["normal"],
+		"category": "skill",
+		"rarity": "uncommon",
+		"energyCost": 1,
+		"target": "enemy",
+		"effects": [
+			{ "kind": "applyStatus", "statusId": "doubt", "behavior": "intensity", "stacks": 3 }
+		],
+		"upgradeMap": {
+			"name": "Screech+",
+			"description": "Apply 4 Doubt to the enemy.",
+			"effects": [
+				{ "kind": "applyStatus", "statusId": "doubt", "behavior": "intensity", "stacks": 4 }
+			]
+		},
+		"tags": ["treecko"]
+	},
+	{
+		"id": "giga-drain",
+		"name": "Giga Drain",
+		"description": "Deal 8 Grass damage. Heal 5 HP.",
+		"types": ["grass"],
+		"category": "attack",
+		"rarity": "uncommon",
+		"energyCost": 1,
+		"target": "enemy",
+		"effects": [{ "kind": "damage", "amount": 8 }, { "kind": "heal", "amount": 5 }],
+		"upgradeMap": {
+			"name": "Giga Drain+",
+			"description": "Deal 10 Grass damage. Heal 8 HP.",
+			"effects": [{ "kind": "damage", "amount": 10 }, { "kind": "heal", "amount": 8 }]
+		},
+		"tags": ["treecko"]
+	},
+	{
+		"id": "energy-ball",
+		"name": "Energy Ball",
+		"description": "Deal 14 Grass damage.",
+		"types": ["grass"],
+		"category": "attack",
+		"rarity": "common",
+		"energyCost": 2,
+		"target": "enemy",
+		"effects": [{ "kind": "damage", "amount": 14 }],
+		"upgradeMap": {
+			"name": "Energy Ball+",
+			"description": "Deal 14 Grass damage. Draw 1 card.",
+			"effects": [{ "kind": "damage", "amount": 14 }, { "kind": "drawCards", "count": 1 }]
+		},
+		"tags": ["treecko"]
+	},
+	{
+		"id": "iron-tail",
+		"name": "Iron Tail",
+		"description": "Deal 8 Steel damage.",
+		"types": ["steel"],
+		"category": "attack",
+		"rarity": "common",
+		"energyCost": 1,
+		"target": "enemy",
+		"effects": [{ "kind": "damage", "amount": 8 }],
+		"upgradeMap": {
+			"name": "Iron Tail+",
+			"description": "Deal 11 Steel damage.",
+			"effects": [{ "kind": "damage", "amount": 11 }]
+		},
+		"tags": ["treecko"]
+	},
+	{
+		"id": "bullet-seed",
+		"name": "Bullet Seed",
+		"description": "Deal 3 Grass damage 3 times.",
+		"types": ["grass"],
+		"category": "attack",
+		"rarity": "uncommon",
+		"energyCost": 1,
+		"target": "enemy",
+		"effects": [
+			{ "kind": "damage", "amount": 3 },
+			{ "kind": "damage", "amount": 3 },
+			{ "kind": "damage", "amount": 3 }
+		],
+		"upgradeMap": {
+			"name": "Bullet Seed+",
+			"description": "Deal 4 Grass damage 3 times.",
+			"effects": [
+				{ "kind": "damage", "amount": 4 },
+				{ "kind": "damage", "amount": 4 },
+				{ "kind": "damage", "amount": 4 }
+			]
+		},
+		"tags": ["treecko"]
+	},
+	{
+		"id": "focus-energy",
+		"name": "Focus Energy",
+		"description": "Gain 2 Focus.",
+		"types": ["normal"],
+		"category": "skill",
+		"rarity": "uncommon",
+		"energyCost": 1,
+		"target": "self",
+		"effects": [{ "kind": "applyBuff", "buffId": "focus", "stacks": 2, "toSelf": true }],
+		"upgradeMap": {
+			"name": "Focus Energy+",
+			"description": "Gain 3 Focus.",
+			"effects": [{ "kind": "applyBuff", "buffId": "focus", "stacks": 3, "toSelf": true }]
+		},
+		"tags": ["treecko"]
+	},
+	{
+		"id": "x-scissor",
+		"name": "X-Scissor",
+		"description": "Deal 15 Bug damage.",
+		"types": ["bug"],
+		"category": "attack",
+		"rarity": "uncommon",
+		"energyCost": 2,
+		"target": "enemy",
+		"effects": [{ "kind": "damage", "amount": 15, "damageTypes": ["bug"] }],
+		"upgradeMap": {
+			"name": "X-Scissor+",
+			"description": "Deal 20 Bug damage.",
+			"effects": [{ "kind": "damage", "amount": 20, "damageTypes": ["bug"] }]
+		},
+		"tags": ["treecko"]
+	},
+	{
+		"id": "leaf-storm",
+		"name": "Leaf Storm",
+		"description": "Deal 20 Grass damage. Draw 2 cards.",
+		"types": ["grass"],
+		"category": "attack",
+		"rarity": "rare",
+		"energyCost": 2,
+		"target": "enemy",
+		"effects": [{ "kind": "damage", "amount": 20 }, { "kind": "drawCards", "count": 2 }],
+		"upgradeMap": {
+			"name": "Leaf Storm+",
+			"description": "Deal 24 Grass damage. Draw 2 cards.",
+			"effects": [{ "kind": "damage", "amount": 24 }, { "kind": "drawCards", "count": 2 }]
+		},
+		"tags": ["treecko"]
+	}
 ]
