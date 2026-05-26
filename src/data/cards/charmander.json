@@ -1,0 +1,282 @@
+[
+  {
+    "id": "scratch",
+    "name": "Scratch",
+    "description": "Deal 6 damage.",
+    "types": ["normal"],
+    "category": "attack",
+    "rarity": "starter",
+    "energyCost": 1,
+    "target": "enemy",
+    "effects": [{ "kind": "damage", "amount": 6 }],
+    "upgradeMap": {
+      "name": "Scratch+",
+      "description": "Deal 9 damage.",
+      "effects": [{ "kind": "damage", "amount": 9 }]
+    },
+    "tags": ["charmander"]
+  },
+  {
+    "id": "growl",
+    "name": "Growl",
+    "description": "Gain 5 Block.",
+    "types": ["normal"],
+    "category": "skill",
+    "rarity": "starter",
+    "energyCost": 1,
+    "target": "self",
+    "effects": [{ "kind": "block", "amount": 5 }],
+    "upgradeMap": {
+      "name": "Growl+",
+      "description": "Gain 8 Block.",
+      "effects": [{ "kind": "block", "amount": 8 }]
+    },
+    "tags": ["charmander"]
+  },
+  {
+    "id": "ember",
+    "name": "Ember",
+    "description": "Deal 7 Fire damage. Apply 1 Burn.",
+    "types": ["fire"],
+    "category": "attack",
+    "rarity": "starter",
+    "energyCost": 1,
+    "target": "enemy",
+    "effects": [
+      { "kind": "damage", "amount": 7 },
+      { "kind": "applyStatus", "statusId": "burn", "behavior": "intensity", "stacks": 1 }
+    ],
+    "upgradeMap": {
+      "name": "Ember+",
+      "description": "Deal 10 Fire damage. Apply 1 Burn.",
+      "effects": [
+        { "kind": "damage", "amount": 10 },
+        { "kind": "applyStatus", "statusId": "burn", "behavior": "intensity", "stacks": 1 }
+      ]
+    },
+    "tags": ["charmander"]
+  },
+  {
+    "id": "smokescreen",
+    "name": "Smokescreen",
+    "description": "Apply 2 Doubt to the enemy.",
+    "types": ["normal"],
+    "category": "skill",
+    "rarity": "common",
+    "energyCost": 1,
+    "target": "enemy",
+    "effects": [{ "kind": "applyStatus", "statusId": "doubt", "behavior": "intensity", "stacks": 2 }],
+    "upgradeMap": {
+      "name": "Smokescreen+",
+      "description": "Apply 3 Doubt to the enemy.",
+      "effects": [{ "kind": "applyStatus", "statusId": "doubt", "behavior": "intensity", "stacks": 3 }]
+    },
+    "tags": ["charmander"]
+  },
+  {
+    "id": "dragon-rage",
+    "name": "Dragon Rage",
+    "description": "Deal 10 damage.",
+    "types": ["dragon"],
+    "category": "attack",
+    "rarity": "common",
+    "energyCost": 0,
+    "target": "enemy",
+    "effects": [{ "kind": "damage", "amount": 10 }],
+    "upgradeMap": {
+      "name": "Dragon Rage+",
+      "description": "Deal 15 damage.",
+      "effects": [{ "kind": "damage", "amount": 15 }]
+    },
+    "tags": ["charmander"]
+  },
+  {
+    "id": "slash",
+    "name": "Slash",
+    "description": "Deal 8 damage.",
+    "types": ["normal"],
+    "category": "attack",
+    "rarity": "common",
+    "energyCost": 1,
+    "target": "enemy",
+    "effects": [{ "kind": "damage", "amount": 8 }],
+    "upgradeMap": {
+      "name": "Slash+",
+      "description": "Deal 11 damage.",
+      "effects": [{ "kind": "damage", "amount": 11 }]
+    },
+    "tags": ["charmander"]
+  },
+  {
+    "id": "flamethrower",
+    "name": "Flamethrower",
+    "description": "Deal 16 Fire damage.",
+    "types": ["fire"],
+    "category": "attack",
+    "rarity": "common",
+    "energyCost": 2,
+    "target": "enemy",
+    "effects": [{ "kind": "damage", "amount": 16 }],
+    "upgradeMap": {
+      "name": "Flamethrower+",
+      "description": "Deal 20 Fire damage.",
+      "effects": [{ "kind": "damage", "amount": 20 }]
+    },
+    "tags": ["charmander"]
+  },
+  {
+    "id": "howl",
+    "name": "Howl",
+    "description": "Gain 2 Strength.",
+    "types": ["normal"],
+    "category": "skill",
+    "rarity": "common",
+    "energyCost": 1,
+    "target": "self",
+    "effects": [{ "kind": "applyBuff", "buffId": "strength", "stacks": 2, "toSelf": true }],
+    "upgradeMap": {
+      "name": "Howl+",
+      "description": "Gain 3 Strength.",
+      "effects": [{ "kind": "applyBuff", "buffId": "strength", "stacks": 3, "toSelf": true }]
+    },
+    "tags": ["charmander"]
+  },
+  {
+    "id": "will-o-wisp",
+    "name": "Will-O-Wisp",
+    "description": "Apply 3 Burn to the enemy.",
+    "types": ["fire"],
+    "category": "skill",
+    "rarity": "uncommon",
+    "energyCost": 1,
+    "target": "enemy",
+    "effects": [{ "kind": "applyStatus", "statusId": "burn", "behavior": "intensity", "stacks": 3 }],
+    "upgradeMap": {
+      "name": "Will-O-Wisp+",
+      "description": "Apply 5 Burn to the enemy.",
+      "effects": [{ "kind": "applyStatus", "statusId": "burn", "behavior": "intensity", "stacks": 5 }]
+    },
+    "tags": ["charmander"]
+  },
+  {
+    "id": "swords-dance",
+    "name": "Swords Dance",
+    "description": "Gain 4 Strength.",
+    "types": ["normal"],
+    "category": "power",
+    "rarity": "uncommon",
+    "energyCost": 2,
+    "target": "self",
+    "effects": [{ "kind": "applyBuff", "buffId": "strength", "stacks": 4, "toSelf": true }],
+    "upgradeMap": {
+      "name": "Swords Dance+",
+      "description": "Gain 6 Strength.",
+      "effects": [{ "kind": "applyBuff", "buffId": "strength", "stacks": 6, "toSelf": true }]
+    },
+    "tags": ["charmander"]
+  },
+  {
+    "id": "scary-face",
+    "name": "Scary Face",
+    "description": "Apply 2 Paralyze to the enemy.",
+    "types": ["normal"],
+    "category": "skill",
+    "rarity": "common",
+    "energyCost": 1,
+    "target": "enemy",
+    "effects": [{ "kind": "applyStatus", "statusId": "paralyze", "behavior": "duration", "stacks": 2 }],
+    "upgradeMap": {
+      "name": "Scary Face+",
+      "description": "Apply 3 Paralyze to the enemy.",
+      "effects": [{ "kind": "applyStatus", "statusId": "paralyze", "behavior": "duration", "stacks": 3 }]
+    },
+    "tags": ["charmander"]
+  },
+  {
+    "id": "fire-spin",
+    "name": "Fire Spin",
+    "description": "Deal 10 Fire damage to all enemies.",
+    "types": ["fire"],
+    "category": "attack",
+    "rarity": "uncommon",
+    "energyCost": 2,
+    "target": "allEnemies",
+    "effects": [{ "kind": "damage", "amount": 10 }],
+    "upgradeMap": {
+      "name": "Fire Spin+",
+      "description": "Deal 14 Fire damage to all enemies.",
+      "effects": [{ "kind": "damage", "amount": 14 }]
+    },
+    "tags": ["charmander"]
+  },
+  {
+    "id": "flare-blitz",
+    "name": "Flare Blitz",
+    "description": "Deal 20 Fire damage. Apply 3 Burn to yourself.",
+    "types": ["fire"],
+    "category": "attack",
+    "rarity": "uncommon",
+    "energyCost": 2,
+    "target": "enemy",
+    "effects": [
+      { "kind": "damage", "amount": 20 },
+      { "kind": "applyStatus", "statusId": "burn", "behavior": "intensity", "stacks": 3, "toSelf": true }
+    ],
+    "upgradeMap": {
+      "name": "Flare Blitz+",
+      "description": "Deal 25 Fire damage. Apply 3 Burn to yourself.",
+      "effects": [
+        { "kind": "damage", "amount": 25 },
+        { "kind": "applyStatus", "statusId": "burn", "behavior": "intensity", "stacks": 3, "toSelf": true }
+      ]
+    },
+    "tags": ["charmander"]
+  },
+  {
+    "id": "rage-chip",
+    "name": "Rage Chip",
+    "description": "Deal 4 damage. Gain 1 Rage.",
+    "types": ["fire"],
+    "category": "attack",
+    "rarity": "common",
+    "energyCost": 0,
+    "target": "enemy",
+    "effects": [
+      { "kind": "damage", "amount": 4 },
+      { "kind": "applyBuff", "buffId": "rage", "stacks": 1, "toSelf": true }
+    ],
+    "upgradeMap": {
+      "name": "Rage Chip+",
+      "description": "Deal 6 damage. Gain 1 Rage.",
+      "effects": [
+        { "kind": "damage", "amount": 6 },
+        { "kind": "applyBuff", "buffId": "rage", "stacks": 1, "toSelf": true }
+      ]
+    },
+    "tags": ["charmander"]
+  },
+  {
+    "id": "fire-blast",
+    "name": "Fire Blast",
+    "description": "Deal 28 Fire damage. Exhaust.",
+    "types": ["fire"],
+    "category": "attack",
+    "rarity": "rare",
+    "energyCost": 3,
+    "target": "enemy",
+    "effects": [
+      { "kind": "damage", "amount": 28 },
+      { "kind": "exhaust" }
+    ],
+    "upgradeMap": {
+      "name": "Fire Blast+",
+      "description": "Deal 28 Fire damage. Apply 2 Burn. Exhaust.",
+      "effects": [
+        { "kind": "damage", "amount": 28 },
+        { "kind": "applyStatus", "statusId": "burn", "behavior": "intensity", "stacks": 2 },
+        { "kind": "exhaust" }
+      ]
+    },
+    "tags": ["charmander"]
+  }
+]
