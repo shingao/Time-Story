@@ -1,0 +1,76 @@
+@import "tailwindcss";
+
+/* PMD-inspired design tokens */
+@theme {
+	/* Type colors — official Gen 6 palette */
+	--color-type-normal: #a8a878;
+	--color-type-fire: #f08030;
+	--color-type-water: #6890f0;
+	--color-type-electric: #f8d030;
+	--color-type-grass: #78c850;
+	--color-type-ice: #98d8d8;
+	--color-type-fighting: #c03028;
+	--color-type-poison: #a040a0;
+	--color-type-ground: #e0c068;
+	--color-type-flying: #a890f0;
+	--color-type-psychic: #f85888;
+	--color-type-bug: #a8b820;
+	--color-type-rock: #b8a038;
+	--color-type-ghost: #705898;
+	--color-type-dragon: #7038f8;
+	--color-type-dark: #705848;
+	--color-type-steel: #b8b8d0;
+	--color-type-fairy: #ee99ac;
+
+	/* PMD Atmosphere — warm guild, cool dungeon */
+	--color-guild-bg: #3d2b1f;
+	--color-guild-panel: #5c3d2a;
+	--color-guild-accent: #d4a044;
+	--color-guild-text: #f5deb3;
+
+	--color-dungeon-bg: #1a1a2e;
+	--color-dungeon-panel: #16213e;
+	--color-dungeon-accent: #0f3460;
+	--color-dungeon-text: #c8d8e8;
+
+	--color-distortion-bg: #2d0033;
+	--color-distortion-accent: #8b00ff;
+	--color-distortion-danger: #cc0033;
+
+	/* Card frame colors */
+	--color-card-attack: #8b2020;
+	--color-card-skill: #1a4a8b;
+	--color-card-power: #4a1a8b;
+	--color-card-status: #1a6b3a;
+	--color-card-curse: #3a1a4a;
+
+	/* Effectiveness feedback */
+	--color-dmg-ultra: #ff4444;
+	--color-dmg-super: #ff8800;
+	--color-dmg-neutral: #ffdd00;
+	--color-dmg-resisted: #aaaaaa;
+	--color-dmg-immune: #555555;
+
+	/* Fonts */
+	--font-pmd: "Nunito", "Rounded Mplus 1c", system-ui, sans-serif;
+}
+
+/* Base resets */
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+body {
+	margin: 0;
+	background: var(--color-dungeon-bg);
+	color: var(--color-dungeon-text);
+	font-family: var(--font-pmd);
+	-webkit-font-smoothing: antialiased;
+}
+
+#root {
+	width: 100%;
+	min-height: 100svh;
+}
