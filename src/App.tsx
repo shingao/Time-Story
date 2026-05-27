@@ -1,4 +1,6 @@
 import { useCombatStore } from "@state/useCombatStore.ts";
+import { AtmosphereDevPanel } from "@ui/atmosphere/AtmosphereDevPanel.tsx";
+import { AtmosphereLayer } from "@ui/atmosphere/AtmosphereLayer.tsx";
 import { CardGallery } from "@ui/scenes/CardGallery.tsx";
 import { CombatScene } from "@ui/scenes/CombatScene.tsx";
 import { DevMenu } from "@ui/scenes/DevMenu.tsx";
@@ -40,14 +42,15 @@ export function App() {
 		window.location.hash = newHash;
 	}
 
-	if (route === "cardGallery") {
-		return <CardGallery />;
-	}
+	return (
+		<div style={{ minHeight: "100svh" }}>
+			<AtmosphereLayer />
 
-	if (route === "combat") {
-		return <CombatScene onReturn={() => goTo("#/")} />;
-	}
+			{route === "cardGallery" && <CardGallery />}
+			{route === "combat" && <CombatScene onReturn={() => goTo("#/")} />}
+			{route === "devMenu" && <DevMenu onStartCombat={() => goTo("#/combat")} />}
 
-	// devMenu
-	return <DevMenu onStartCombat={() => goTo("#/combat")} />;
+			<AtmosphereDevPanel />
+		</div>
+	);
 }

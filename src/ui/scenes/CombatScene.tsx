@@ -11,7 +11,7 @@ import { EnemyArea } from "@ui/combat/EnemyArea.tsx";
 import { LoseScreen } from "@ui/combat/LoseScreen.tsx";
 import { PlayerStats } from "@ui/combat/PlayerStats.tsx";
 import { WinScreen } from "@ui/combat/WinScreen.tsx";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 
 // ---------------------------------------------------------------------------
@@ -67,6 +67,11 @@ export function CombatScene({ onReturn }: CombatSceneProps) {
 	);
 
 	const clearNumbers = useFloatingNumbersStore((s) => s.clear);
+
+	// Set combat atmosphere on mount
+	useEffect(() => {
+		useUIStore.getState().setAtmosphere("mystifying_forest");
+	}, []);
 
 	// Local targeting state — which card is staged for targeting
 	const [targetingCardId, setTargetingCardId] = useState<string | null>(null);

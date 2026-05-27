@@ -3,7 +3,9 @@ import type { EnemyId } from "@core/combat/entity.ts";
 import { asEnemyId } from "@core/combat/entity.ts";
 import { resetSpawnCounter } from "@core/enemies/enemy-registry.ts";
 import { useCombatStore } from "@state/useCombatStore.ts";
+import { useUIStore } from "@state/useUIStore.ts";
 import { motion } from "framer-motion";
+import { useEffect } from "react";
 import { createDevCombat } from "./devCombatFactory.ts";
 
 // ---------------------------------------------------------------------------
@@ -53,6 +55,10 @@ interface DevMenuProps {
 export function DevMenu({ onStartCombat }: DevMenuProps) {
 	const initCombat = useCombatStore((s) => s.initCombat);
 	const seed = (Date.now() ^ 0xdeadbeef) >>> 0;
+
+	useEffect(() => {
+		useUIStore.getState().setAtmosphere("guild_interior");
+	}, []);
 
 	function startEncounter(starter: StarterName, enemyId: EnemyId) {
 		resetSpawnCounter();
