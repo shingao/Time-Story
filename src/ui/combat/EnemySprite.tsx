@@ -101,6 +101,7 @@ export const EnemySprite = memo(function EnemySprite({
 						role="button"
 						tabIndex={0}
 						aria-label={`Target ${enemy.name}`}
+						data-enemy-id={String(enemy.id)}
 						onKeyDown={(e) => {
 							if (e.key === "Enter" || e.key === " ") onClick();
 						}}

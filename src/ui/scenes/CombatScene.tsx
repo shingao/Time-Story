@@ -127,6 +127,44 @@ export function CombatScene({ onReturn }: CombatSceneProps) {
 		[targetingCardId, playCard, clearSelection],
 	);
 
+	const handleCardDragEnd = useCallback(
+		(instanceId: string, x: number, y: number) => {
+			if (phase !== "PLAYER_TURN") return;
+
+			// Determine which enemy (if any) was under the drop point
+			const elements = document.elementsFromPoint(x, y);
+			let droppedEnemyId: string | null = null;
+			for (const el of elements) {
+				const id = (el as HTMLElement).dataset?.enemyId;
+				if (id) {
+					droppedEnemyId = id;
+					break;
+				}
+			}
+			if (!droppedEnemyId) return;
+
+			const inst = combatState?.hand.find((c) => c.instanceId === instanceId);
+			if (!inst) return;
+
+			let def: ReturnType<typeof getCardDefinition>;
+			try {
+				def = getCardDefinition(inst.definitionId);
+			} catch {
+				return;
+			}
+
+			// Only play enemy-targeting cards via drag; self/none cards use click
+			if (def.target !== "enemy") return;
+
+			const result = playCard(instanceId, droppedEnemyId);
+			if (result.played) {
+				setTargetingCardId(null);
+				clearSelection();
+			}
+		},
+		[phase, combatState, playCard, clearSelection],
+	);
+
 	const handleEndTurn = useCallback(() => {
 		setTargetingCardId(null);
 		clearSelection();
@@ -232,6 +270,7 @@ export function CombatScene({ onReturn }: CombatSceneProps) {
 						playableIds={playableIds}
 						selectedId={targetingCardId ?? undefined}
 						onCardClick={handleCardClick}
+						onCardDragEnd={handleCardDragEnd}
 					/>
 				</div>
 

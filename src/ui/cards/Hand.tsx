@@ -23,13 +23,15 @@ export interface HandProps {
 	readonly selectedId?: string;
 	/** Called when a card is clicked */
 	readonly onCardClick?: (instanceId: string) => void;
+	/** Called when a card is dragged and released; x/y are viewport coordinates */
+	readonly onCardDragEnd?: (instanceId: string, x: number, y: number) => void;
 }
 
 // ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
 
-export function Hand({ cards, playableIds, selectedId, onCardClick }: HandProps) {
+export function Hand({ cards, playableIds, selectedId, onCardClick, onCardDragEnd }: HandProps) {
 	const n = cards.length;
 
 	return (
@@ -83,6 +85,14 @@ export function Hand({ cards, playableIds, selectedId, onCardClick }: HandProps)
 								zIndex: 30,
 								transition: { type: "spring", stiffness: 400, damping: 22 },
 							}}
+							drag={isPlayable && onCardDragEnd ? true : false}
+							dragSnapToOrigin
+							whileDrag={{ scale: 1.1, rotate: 0, zIndex: 50 }}
+							onDragEnd={
+								isPlayable && onCardDragEnd
+									? (_event, info) => onCardDragEnd(inst.instanceId, info.point.x, info.point.y)
+									: undefined
+							}
 						>
 							<CardFrame
 								definition={definition}
