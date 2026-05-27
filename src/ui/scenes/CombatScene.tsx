@@ -42,9 +42,11 @@ function computePlayableIds(
 
 interface CombatSceneProps {
 	readonly onReturn: () => void;
+	readonly onRunWin?: (finalHp: number) => void;
+	readonly onRunLose?: () => void;
 }
 
-export function CombatScene({ onReturn }: CombatSceneProps) {
+export function CombatScene({ onReturn, onRunWin, onRunLose }: CombatSceneProps) {
 	// Store slices — shallow selectors prevent re-renders on unrelated changes
 	const { combatState, phase, turnNumber } = useCombatStore(
 		useShallow((s) => ({
@@ -83,6 +85,22 @@ export function CombatScene({ onReturn }: CombatSceneProps) {
 		setTargetingCardId(null);
 		onReturn();
 	}, [reset, clearNumbers, clearSelection, onReturn]);
+
+	// Run-mode: called from WinScreen BEFORE reset so we still have final HP
+	const handleWin = useCallback(() => {
+		if (onRunWin && combatState) {
+			onRunWin(combatState.player.hp);
+		}
+		handleCombatEnd();
+	}, [onRunWin, combatState, handleCombatEnd]);
+
+	// Run-mode: called from LoseScreen BEFORE reset
+	const handleLose = useCallback(() => {
+		if (onRunLose) {
+			onRunLose();
+		}
+		handleCombatEnd();
+	}, [onRunLose, handleCombatEnd]);
 
 	const handleCardClick = useCallback(
 		(instanceId: string) => {
@@ -291,8 +309,8 @@ export function CombatScene({ onReturn }: CombatSceneProps) {
 			<AnimationDriver />
 
 			{/* Outcome overlays */}
-			{phase === "WIN" && <WinScreen onContinue={handleCombatEnd} />}
-			{phase === "LOSE" && <LoseScreen onReturn={handleCombatEnd} />}
+			{phase === "WIN" && <WinScreen onContinue={onRunWin ? handleWin : handleCombatEnd} />}
+			{phase === "LOSE" && <LoseScreen onReturn={onRunLose ? handleLose : handleCombatEnd} />}
 		</div>
 	);
 }

@@ -3,6 +3,7 @@ import type { EnemyId } from "@core/combat/entity.ts";
 import { asEnemyId } from "@core/combat/entity.ts";
 import { resetSpawnCounter } from "@core/enemies/enemy-registry.ts";
 import { useCombatStore } from "@state/useCombatStore.ts";
+import { useRunStore } from "@state/useRunStore.ts";
 import { useUIStore } from "@state/useUIStore.ts";
 import { motion } from "framer-motion";
 import { useEffect } from "react";
@@ -50,10 +51,12 @@ const ENCOUNTERS: ReadonlyArray<{
 
 interface DevMenuProps {
 	readonly onStartCombat: () => void;
+	readonly onStartRun: () => void;
 }
 
-export function DevMenu({ onStartCombat }: DevMenuProps) {
+export function DevMenu({ onStartCombat, onStartRun }: DevMenuProps) {
 	const initCombat = useCombatStore((s) => s.initCombat);
+	const startRun = useRunStore((s) => s.startRun);
 	const seed = (Date.now() ^ 0xdeadbeef) >>> 0;
 
 	useEffect(() => {
@@ -65,6 +68,12 @@ export function DevMenu({ onStartCombat }: DevMenuProps) {
 		const state = createDevCombat(starter, enemyId);
 		initCombat(state, seed);
 		onStartCombat();
+	}
+
+	function handleStartRun(starterId: StarterName) {
+		const runSeed = (Date.now() ^ 0xdeadbeef) >>> 0;
+		startRun(runSeed, starterId);
+		onStartRun();
 	}
 
 	return (
@@ -126,13 +135,76 @@ export function DevMenu({ onStartCombat }: DevMenuProps) {
 				</div>
 			</motion.section>
 
-			{/* Card gallery link */}
-			<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.18 }}>
+			{/* Start Run section */}
+			<motion.section
+				initial={{ opacity: 0, y: 16 }}
+				animate={{ opacity: 1, y: 0 }}
+				transition={{ delay: 0.14 }}
+				className="w-full max-w-md"
+				aria-label="Start a full run"
+			>
+				<h2 className="mb-3 text-center text-sm uppercase tracking-widest text-white/40">
+					Start Run
+				</h2>
+				<div className="flex flex-col gap-3">
+					{(
+						[
+							{
+								starterId: "charmander" as StarterName,
+								label: "Act 1 Run — Charmander",
+								emoji: "🔥",
+								desc: "Fire type · 44 HP · Scratch, Growl, Ember",
+							},
+							{
+								starterId: "treecko" as StarterName,
+								label: "Act 1 Run — Treecko",
+								emoji: "🌿",
+								desc: "Grass type · 40 HP · Pound, Harden, Absorb",
+							},
+						] as const
+					).map((run) => (
+						<motion.button
+							key={run.starterId}
+							type="button"
+							onClick={() => handleStartRun(run.starterId)}
+							className="group flex flex-col items-start rounded-xl px-5 py-4 text-left transition-colors"
+							style={{
+								background: "rgba(99,102,241,0.1)",
+								border: "1px solid rgba(99,102,241,0.25)",
+							}}
+							whileHover={{
+								scale: 1.02,
+								backgroundColor: "rgba(99,102,241,0.18)",
+							}}
+							whileTap={{ scale: 0.98 }}
+						>
+							<span className="font-bold text-white text-sm">
+								{run.emoji} {run.label}
+							</span>
+							<span className="mt-0.5 text-[11px] text-white/50">{run.desc}</span>
+						</motion.button>
+					))}
+				</div>
+			</motion.section>
+
+			{/* Links */}
+			<motion.div
+				initial={{ opacity: 0 }}
+				animate={{ opacity: 1 }}
+				transition={{ delay: 0.22 }}
+				className="flex gap-4"
+			>
 				<a
 					href="#/dev/cards"
 					className="text-xs text-white/40 underline decoration-dotted hover:text-white/70"
 				>
 					View Card Gallery →
+				</a>
+				<a
+					href="#/dev/map"
+					className="text-xs text-white/40 underline decoration-dotted hover:text-white/70"
+				>
+					View Map →
 				</a>
 			</motion.div>
 		</div>
