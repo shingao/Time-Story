@@ -42,7 +42,7 @@ function useHashRoute(): string {
 function RunContainer({ onEndRun }: { readonly onEndRun: () => void }) {
 	const runStatus = useRunStore((s) => s.status);
 	if (runStatus === "in_combat") {
-		return <RunCombatAdapter onEndRun={onEndRun} />;
+		return <RunCombatAdapter />;
 	}
 	return <MapScene onEndRun={onEndRun} />;
 }

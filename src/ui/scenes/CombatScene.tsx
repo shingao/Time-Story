@@ -83,6 +83,8 @@ export function CombatScene({ onReturn, onRunWin, onRunLose }: CombatSceneProps)
 		clearNumbers();
 		clearSelection();
 		setTargetingCardId(null);
+		// Standalone: onReturn navigates to dev menu.
+		// Run-mode: onReturn is a no-op; RunStore.status already drives the route.
 		onReturn();
 	}, [reset, clearNumbers, clearSelection, onReturn]);
 

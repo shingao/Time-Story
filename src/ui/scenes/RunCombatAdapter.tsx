@@ -2,15 +2,11 @@ import { resetSpawnCounter } from "@core/enemies/enemy-registry.ts";
 import { createRunCombat } from "@core/run/runCombatFactory.ts";
 import { useCombatStore } from "@state/useCombatStore.ts";
 import { useRunStore } from "@state/useRunStore.ts";
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { CombatScene } from "./CombatScene.tsx";
 
-interface RunCombatAdapterProps {
-	readonly onEndRun: () => void;
-}
-
-export function RunCombatAdapter({ onEndRun }: RunCombatAdapterProps) {
+export function RunCombatAdapter() {
 	const { starterId, currentNodeId, nodeEncounters, playerSnapshot } = useRunStore(
 		useShallow((s) => ({
 			starterId: s.starterId,
@@ -49,12 +45,22 @@ export function RunCombatAdapter({ onEndRun }: RunCombatAdapterProps) {
 
 	const handleRunWin = (finalHp: number) => {
 		returnToMap({ finalHp });
+		// RunStore.status is now "in_map" — RunContainer re-renders MapScene automatically.
 	};
 
 	const handleRunLose = () => {
 		endRun("defeat");
-		onEndRun();
+		// RunStore.status is now "defeat" — MapScene shows DefeatScreen.
+		// Its "Return to Guild" button calls onEndRun via MapScene.handleEndRun.
 	};
 
-	return <CombatScene onReturn={onEndRun} onRunWin={handleRunWin} onRunLose={handleRunLose} />;
+	// Two combat contexts:
+	//   Standalone (DevMenu, no run): CombatScene passes onReturn directly to nav away.
+	//   Run-mode (this adapter): win/lose hooks already updated RunStore; routing is driven
+	//   by RunStore.status, so no explicit navigation is needed after the hooks run.
+	const handleCombatReturn = useCallback(() => {}, []);
+
+	return (
+		<CombatScene onReturn={handleCombatReturn} onRunWin={handleRunWin} onRunLose={handleRunLose} />
+	);
 }

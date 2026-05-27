@@ -230,6 +230,116 @@ describe("clearRun", () => {
 });
 
 // ---------------------------------------------------------------------------
+// Run lifecycle regression — combat win must not discard the run
+// ---------------------------------------------------------------------------
+
+describe("run lifecycle regression — combat result routing", () => {
+	it("win: returnToMap leaves run active, node visited, status in_map", () => {
+		useRunStore.getState().startRun(42, "charmander");
+		const { serializedMap } = useRunStore.getState();
+		const combatNode = serializedMap?.nodes.find((n) => n.type === "combat");
+		expect(combatNode).toBeDefined();
+		const nodeId = asNodeId(combatNode?.id);
+
+		useRunStore.getState().travelToNode(nodeId);
+		expect(useRunStore.getState().status).toBe("in_combat");
+
+		useRunStore.getState().returnToMap({ finalHp: 38 });
+
+		const state = useRunStore.getState();
+		// Run must remain active — serializedMap must not be cleared
+		expect(state.serializedMap).not.toBeNull();
+		expect(state.status).toBe("in_map");
+		expect(state.visitedNodeIds).toContain(combatNode?.id);
+		expect(state.playerSnapshot.currentHp).toBe(38);
+	});
+
+	it("defeat: endRun sets defeat status, run data preserved for DefeatScreen", () => {
+		useRunStore.getState().startRun(42, "charmander");
+		const { serializedMap } = useRunStore.getState();
+		const combatNode = serializedMap?.nodes.find((n) => n.type === "combat");
+		expect(combatNode).toBeDefined();
+		useRunStore.getState().travelToNode(asNodeId(combatNode?.id));
+
+		useRunStore.getState().endRun("defeat");
+
+		const state = useRunStore.getState();
+		expect(state.status).toBe("defeat");
+		// serializedMap must NOT be cleared — MapScene needs it to render DefeatScreen
+		expect(state.serializedMap).not.toBeNull();
+	});
+
+	it("chain of 3 combats: each win accumulates visited nodes and preserves HP", () => {
+		useRunStore.getState().startRun(42, "charmander");
+		const { serializedMap } = useRunStore.getState();
+		const map = deserializeDungeonMap(serializedMap);
+
+		const n1 = map.startNodeIds[0];
+		if (!n1) return;
+		useRunStore.getState().travelToNode(n1);
+		useRunStore.getState().returnToMap({ finalHp: 40 });
+
+		const node1 = map.nodes.get(n1);
+		if (!node1) return;
+		const n2 = node1.edges[0];
+		if (!n2) return;
+		useRunStore.getState().travelToNode(n2);
+		useRunStore.getState().returnToMap({ finalHp: 35 });
+
+		const node2 = map.nodes.get(n2);
+		if (!node2) return;
+		const n3 = node2.edges[0];
+		if (!n3) return;
+		useRunStore.getState().travelToNode(n3);
+		useRunStore.getState().returnToMap({ finalHp: 30 });
+
+		const state = useRunStore.getState();
+		expect(state.status).toBe("in_map");
+		expect(state.visitedNodeIds).toContain(n1);
+		expect(state.visitedNodeIds).toContain(n2);
+		expect(state.visitedNodeIds).toContain(n3);
+		expect(state.playerSnapshot.currentHp).toBe(30);
+		expect(state.serializedMap).not.toBeNull();
+	});
+
+	it("stub room (event): returnToMap leaves run active with node visited", () => {
+		useRunStore.getState().startRun(42, "charmander");
+		const { serializedMap } = useRunStore.getState();
+		const eventNode = serializedMap?.nodes.find((n) => n.type === "event");
+		if (!eventNode) return; // skip if seed has no event node
+		useRunStore.getState().travelToNode(asNodeId(eventNode.id));
+		expect(useRunStore.getState().status).toBe("in_event");
+
+		useRunStore.getState().returnToMap({});
+
+		const state = useRunStore.getState();
+		expect(state.status).toBe("in_map");
+		expect(state.visitedNodeIds).toContain(eventNode.id);
+		expect(state.serializedMap).not.toBeNull();
+	});
+
+	it("boss win: endRun('victory') sets status to victory; clearRun resets for return to menu", () => {
+		useRunStore.getState().startRun(42, "charmander");
+		const { serializedMap } = useRunStore.getState();
+		const bossNode = serializedMap?.nodes.find((n) => n.type === "boss");
+		expect(bossNode).toBeDefined();
+		useRunStore.getState().travelToNode(asNodeId(bossNode?.id));
+		expect(useRunStore.getState().status).toBe("in_map"); // boss stays on map
+
+		useRunStore.getState().endRun("victory");
+		const mid = useRunStore.getState();
+		expect(mid.status).toBe("victory");
+		expect(mid.serializedMap).not.toBeNull(); // VictoryScreen renders on top of MapScene
+
+		// Simulate "Return to Guild" button
+		useRunStore.getState().clearRun();
+		const final = useRunStore.getState();
+		expect(final.serializedMap).toBeNull();
+		expect(final.status).toBe("in_map"); // reset to initial
+	});
+});
+
+// ---------------------------------------------------------------------------
 // computeAvailableNodeIds
 // ---------------------------------------------------------------------------
 
