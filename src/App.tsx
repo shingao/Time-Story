@@ -2,6 +2,7 @@ import { useCombatStore } from "@state/useCombatStore.ts";
 import { useRunStore } from "@state/useRunStore.ts";
 import { AtmosphereDevPanel } from "@ui/atmosphere/AtmosphereDevPanel.tsx";
 import { AtmosphereLayer } from "@ui/atmosphere/AtmosphereLayer.tsx";
+import { CampfireScene } from "@ui/scenes/CampfireScene.tsx";
 import { CardGallery } from "@ui/scenes/CardGallery.tsx";
 import { CombatScene } from "@ui/scenes/CombatScene.tsx";
 import { DevMapScene } from "@ui/scenes/DevMapScene.tsx";
@@ -41,9 +42,8 @@ function useHashRoute(): string {
 
 function RunContainer({ onEndRun }: { readonly onEndRun: () => void }) {
 	const runStatus = useRunStore((s) => s.status);
-	if (runStatus === "in_combat") {
-		return <RunCombatAdapter />;
-	}
+	if (runStatus === "in_combat") return <RunCombatAdapter />;
+	if (runStatus === "in_campfire") return <CampfireScene />;
 	return <MapScene onEndRun={onEndRun} />;
 }
 

@@ -14,6 +14,8 @@ export interface PlayerSnapshot {
 	readonly relicIds: readonly string[]; // empty for now
 	readonly partnerState: null; // stub
 	readonly timeGearCount: number; // stub = 0
+	/** Per-instance upgrade levels. Key = instanceId ("${defId}-${i}"), value = 0 | 1 | 2. */
+	readonly cardUpgrades: Readonly<Record<string, 0 | 1 | 2>>;
 }
 
 // ---------------------------------------------------------------------------

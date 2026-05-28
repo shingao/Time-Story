@@ -44,7 +44,7 @@ export function createRunCombat(
 	const deck = snapshot.deckCardIds.map((defId, i) => ({
 		instanceId: `${defId}-${i}`,
 		definitionId: asCardId(defId),
-		upgradeLevel: 0 as const,
+		upgradeLevel: (snapshot.cardUpgrades[`${defId}-${i}`] ?? 0) as 0 | 1 | 2,
 	}));
 	const drawPile = rng.shuffle([...deck]);
 

@@ -15,7 +15,8 @@ export type AtmosphereId =
 	| "distortion_realm"
 	| "summit_peak"
 	| "dark_future"
-	| "aftermath";
+	| "aftermath"
+	| "campfire";
 
 export type ParticleKind = "leaves" | "embers" | "dust" | "snow" | "distortion";
 
@@ -124,5 +125,15 @@ export const ATMOSPHERES: Record<AtmosphereId, Atmosphere> = {
 		vignetteStrength: 0.7,
 		particles: { kind: "dust", density: 0.5 },
 		placeholderGradient: "linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 50%, #0a0a0a 100%)",
+	},
+	campfire: {
+		id: "campfire",
+		imagePath: "/src/assets/backgrounds/campfire.png",
+		displayName: "Resting Spot",
+		tint: "#FF8C42",
+		tintOpacity: 0.12,
+		vignetteStrength: 0.5,
+		particles: { kind: "embers", density: 0.6 },
+		placeholderGradient: "linear-gradient(135deg, #3d1a00 0%, #7a3600 50%, #3d1a00 100%)",
 	},
 };

@@ -25,6 +25,7 @@ const CHARMANDER_SNAPSHOT: PlayerSnapshot = {
 	relicIds: [],
 	partnerState: null,
 	timeGearCount: 0,
+	cardUpgrades: {},
 };
 
 const TREECKO_SNAPSHOT: PlayerSnapshot = {
@@ -46,6 +47,7 @@ const TREECKO_SNAPSHOT: PlayerSnapshot = {
 	relicIds: [],
 	partnerState: null,
 	timeGearCount: 0,
+	cardUpgrades: {},
 };
 
 const SEED = 12345;
@@ -112,6 +114,22 @@ describe("createRunCombat", () => {
 	it("player has correct type for treecko", () => {
 		const state = createRunCombat(TREECKO_SNAPSHOT, "treecko", "zubat", SEED);
 		expect(state.player.types).toContain("grass");
+	});
+
+	it("applies cardUpgrades from snapshot to drawPile upgradeLevel", () => {
+		// scratch-0 upgraded to level 1, ember-9 upgraded to level 2
+		const withUpgrades: PlayerSnapshot = {
+			...CHARMANDER_SNAPSHOT,
+			cardUpgrades: { "scratch-0": 1, "ember-9": 2 },
+		};
+		const state = createRunCombat(withUpgrades, "charmander", "pidgey", SEED);
+		const allCards = [...state.drawPile, ...state.hand];
+		const scratch0 = allCards.find((c) => c.instanceId === "scratch-0");
+		const ember9 = allCards.find((c) => c.instanceId === "ember-9");
+		const scratch1 = allCards.find((c) => c.instanceId === "scratch-1");
+		expect(scratch0?.upgradeLevel).toBe(1);
+		expect(ember9?.upgradeLevel).toBe(2);
+		expect(scratch1?.upgradeLevel).toBe(0); // unupgraded
 	});
 
 	it("uses seed deterministically (same seed = same enemy HP)", () => {

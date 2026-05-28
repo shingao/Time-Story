@@ -29,12 +29,6 @@ const STUB_CONTENT: Partial<
 		btnLabel: "Skip and continue",
 		icon: "🏪",
 	},
-	campfire: {
-		title: "Kangaskhan Statue",
-		phase: "Phase 4.3",
-		btnLabel: "Rest and continue",
-		icon: "🏛",
-	},
 	treasure: {
 		title: "Treasure Room",
 		phase: "Phase 4.4",

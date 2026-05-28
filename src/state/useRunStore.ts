@@ -28,6 +28,7 @@ interface RunStoreActions {
 	startRun(seed: number, starterId: StarterName): void;
 	travelToNode(nodeId: NodeId): void;
 	returnToMap(outcome: { finalHp?: number; goldDelta?: number; newCardId?: string }): void;
+	completeCampfire(updatedPlayer: PlayerSnapshot): void;
 	endRun(result: "victory" | "defeat"): void;
 	clearRun(): void;
 }
@@ -44,6 +45,7 @@ const DEFAULT_SNAPSHOT: PlayerSnapshot = {
 	relicIds: [],
 	partnerState: null,
 	timeGearCount: 0,
+	cardUpgrades: {},
 };
 
 const STARTER_SNAPSHOTS: Record<StarterName, Omit<PlayerSnapshot, "deckCardIds">> = {
@@ -54,6 +56,7 @@ const STARTER_SNAPSHOTS: Record<StarterName, Omit<PlayerSnapshot, "deckCardIds">
 		relicIds: [],
 		partnerState: null,
 		timeGearCount: 0,
+		cardUpgrades: {},
 	},
 	treecko: {
 		currentHp: 40,
@@ -62,6 +65,7 @@ const STARTER_SNAPSHOTS: Record<StarterName, Omit<PlayerSnapshot, "deckCardIds">
 		relicIds: [],
 		partnerState: null,
 		timeGearCount: 0,
+		cardUpgrades: {},
 	},
 };
 
@@ -215,6 +219,16 @@ export const useRunStore = create<RunStoreState & RunStoreActions>()(
 				});
 			},
 
+			completeCampfire(updatedPlayer) {
+				const { currentNodeId, visitedNodeIds } = get();
+				if (!currentNodeId) return;
+				set({
+					visitedNodeIds: [...visitedNodeIds, currentNodeId],
+					playerSnapshot: updatedPlayer,
+					status: "in_map",
+				});
+			},
+
 			endRun(result) {
 				set({ status: result });
 			},
@@ -224,12 +238,12 @@ export const useRunStore = create<RunStoreState & RunStoreActions>()(
 			},
 		}),
 		{
-			name: "pmd-run-v1",
-			version: 1,
+			name: "pmd-run-v2",
+			version: 2,
 			migrate: (_persisted, _version) => INITIAL_STATE,
 			onRehydrateStorage: () => (state) => {
-				// Refresh mid-combat: reset to map so player re-enters the room
-				if (state && state.status === "in_combat") {
+				// Refresh mid-combat or mid-campfire: reset to map so player re-enters the room
+				if (state && (state.status === "in_combat" || state.status === "in_campfire")) {
 					state.status = "in_map";
 				}
 			},

@@ -194,6 +194,60 @@ describe("returnToMap", () => {
 });
 
 // ---------------------------------------------------------------------------
+// completeCampfire
+// ---------------------------------------------------------------------------
+
+describe("completeCampfire", () => {
+	it("marks the campfire node as visited and returns to in_map", () => {
+		useRunStore.getState().startRun(42, "charmander");
+		const { serializedMap } = useRunStore.getState();
+		const campfireNode = serializedMap?.nodes.find((n) => n.type === "campfire");
+		if (!campfireNode) return; // skip if seed has no campfire node
+		useRunStore.getState().travelToNode(asNodeId(campfireNode.id));
+		expect(useRunStore.getState().status).toBe("in_campfire");
+
+		const updatedPlayer = {
+			...useRunStore.getState().playerSnapshot,
+			currentHp: 40,
+		};
+		useRunStore.getState().completeCampfire(updatedPlayer);
+
+		const state = useRunStore.getState();
+		expect(state.status).toBe("in_map");
+		expect(state.visitedNodeIds).toContain(campfireNode.id);
+		expect(state.playerSnapshot.currentHp).toBe(40);
+	});
+
+	it("preserves serializedMap (run stays active) after campfire", () => {
+		useRunStore.getState().startRun(42, "charmander");
+		const { serializedMap } = useRunStore.getState();
+		const campfireNode = serializedMap?.nodes.find((n) => n.type === "campfire");
+		if (!campfireNode) return;
+		useRunStore.getState().travelToNode(asNodeId(campfireNode.id));
+		useRunStore.getState().completeCampfire(useRunStore.getState().playerSnapshot);
+
+		expect(useRunStore.getState().serializedMap).not.toBeNull();
+	});
+
+	it("persists cardUpgrades from completeCampfire to subsequent playerSnapshot", () => {
+		useRunStore.getState().startRun(42, "charmander");
+		const { serializedMap, playerSnapshot } = useRunStore.getState();
+		const campfireNode = serializedMap?.nodes.find((n) => n.type === "campfire");
+		if (!campfireNode) return;
+		useRunStore.getState().travelToNode(asNodeId(campfireNode.id));
+
+		const withUpgrade = {
+			...playerSnapshot,
+			cardUpgrades: { "scratch-0": 1 as const },
+		};
+		useRunStore.getState().completeCampfire(withUpgrade);
+
+		const state = useRunStore.getState();
+		expect(state.playerSnapshot.cardUpgrades["scratch-0"]).toBe(1);
+	});
+});
+
+// ---------------------------------------------------------------------------
 // endRun
 // ---------------------------------------------------------------------------
 

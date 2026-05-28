@@ -15,6 +15,7 @@ describe("PlayerSnapshot", () => {
 			relicIds: [],
 			partnerState: null,
 			timeGearCount: 0,
+			cardUpgrades: {},
 		};
 		expect(snap.currentHp).toBe(30);
 		expect(snap.maxHp).toBe(44);
@@ -34,6 +35,7 @@ describe("PlayerSnapshot", () => {
 			relicIds: [],
 			partnerState: null,
 			timeGearCount: 0,
+			cardUpgrades: {},
 		};
 		expect(snap.deckCardIds).toHaveLength(5);
 		expect(snap.deckCardIds.every((id) => id === "scratch")).toBe(true);

@@ -180,12 +180,8 @@ export function MapScene({ onEndRun }: MapSceneProps) {
 	// Determine current room node for stub modals
 	const currentNode = currentNodeId ? map.nodes.get(currentNodeId) : null;
 
-	// Show stub modal for non-combat room statuses
-	const showStub =
-		status === "in_event" ||
-		status === "in_shop" ||
-		status === "in_campfire" ||
-		status === "in_treasure";
+	// Show stub modal for non-combat room statuses (campfire handled by CampfireScene)
+	const showStub = status === "in_event" || status === "in_shop" || status === "in_treasure";
 
 	// Boss stub: currentNodeId is set, not yet visited, and node is boss type
 	const showBossStub =
