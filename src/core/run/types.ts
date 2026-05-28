@@ -25,6 +25,7 @@ export interface PlayerSnapshot {
 export type RunStatus =
 	| "in_map"
 	| "in_combat"
+	| "in_reward"
 	| "in_event"
 	| "in_shop"
 	| "in_campfire"

@@ -451,3 +451,140 @@ describe("computeAvailableNodeIds", () => {
 		expect(available.has(firstEdge)).toBe(false);
 	});
 });
+
+// ---------------------------------------------------------------------------
+// startReward / completeReward
+// ---------------------------------------------------------------------------
+
+describe("startReward", () => {
+	it("sets status to in_reward and stores a pendingReward", () => {
+		useRunStore.getState().startRun(42, "charmander");
+		const { serializedMap } = useRunStore.getState();
+		const combatNode = serializedMap?.nodes.find((n) => n.type === "combat");
+		if (!combatNode) return;
+		useRunStore.getState().travelToNode(asNodeId(combatNode.id));
+		expect(useRunStore.getState().status).toBe("in_combat");
+
+		useRunStore.getState().startReward(30);
+
+		const state = useRunStore.getState();
+		expect(state.status).toBe("in_reward");
+		expect(state.pendingReward).not.toBeNull();
+		expect(state.pendingReward?.gold).toBeGreaterThan(0);
+		expect(state.pendingReward?.cardChoices.length).toBeGreaterThanOrEqual(1);
+		expect(state.pendingReward?.relicChoice).toBeNull();
+	});
+
+	it("updates currentHp from finalHp argument", () => {
+		useRunStore.getState().startRun(42, "charmander");
+		const { serializedMap } = useRunStore.getState();
+		const combatNode = serializedMap?.nodes.find((n) => n.type === "combat");
+		if (!combatNode) return;
+		useRunStore.getState().travelToNode(asNodeId(combatNode.id));
+		useRunStore.getState().startReward(28);
+		expect(useRunStore.getState().playerSnapshot.currentHp).toBe(28);
+	});
+
+	it("caps currentHp at maxHp", () => {
+		useRunStore.getState().startRun(42, "charmander");
+		const { serializedMap } = useRunStore.getState();
+		const combatNode = serializedMap?.nodes.find((n) => n.type === "combat");
+		if (!combatNode) return;
+		useRunStore.getState().travelToNode(asNodeId(combatNode.id));
+		useRunStore.getState().startReward(999);
+		expect(useRunStore.getState().playerSnapshot.currentHp).toBe(44); // maxHp for charmander
+	});
+
+	it("does not add currentNodeId to visitedNodeIds yet", () => {
+		useRunStore.getState().startRun(42, "charmander");
+		const { serializedMap } = useRunStore.getState();
+		const combatNode = serializedMap?.nodes.find((n) => n.type === "combat");
+		if (!combatNode) return;
+		useRunStore.getState().travelToNode(asNodeId(combatNode.id));
+		useRunStore.getState().startReward(30);
+		expect(useRunStore.getState().visitedNodeIds).not.toContain(combatNode.id);
+	});
+
+	it("is deterministic — same seed + nodeId produces the same reward", () => {
+		useRunStore.getState().startRun(42, "charmander");
+		const { serializedMap } = useRunStore.getState();
+		const combatNode = serializedMap?.nodes.find((n) => n.type === "combat");
+		if (!combatNode) return;
+		useRunStore.getState().travelToNode(asNodeId(combatNode.id));
+		useRunStore.getState().startReward(30);
+		const reward1 = useRunStore.getState().pendingReward;
+
+		// Reset and replay
+		useRunStore.getState().clearRun();
+		useRunStore.getState().startRun(42, "charmander");
+		useRunStore.getState().travelToNode(asNodeId(combatNode.id));
+		useRunStore.getState().startReward(30);
+		const reward2 = useRunStore.getState().pendingReward;
+
+		expect(reward1?.gold).toBe(reward2?.gold);
+		expect(reward1?.cardChoices).toEqual(reward2?.cardChoices);
+	});
+});
+
+describe("completeReward", () => {
+	function setupReward() {
+		useRunStore.getState().startRun(42, "charmander");
+		const { serializedMap } = useRunStore.getState();
+		const combatNode = serializedMap?.nodes.find((n) => n.type === "combat");
+		if (!combatNode) return null;
+		useRunStore.getState().travelToNode(asNodeId(combatNode.id));
+		useRunStore.getState().startReward(30);
+		return combatNode.id;
+	}
+
+	it("sets status back to in_map", () => {
+		const nodeId = setupReward();
+		if (!nodeId) return;
+		useRunStore.getState().completeReward();
+		expect(useRunStore.getState().status).toBe("in_map");
+	});
+
+	it("marks the node as visited", () => {
+		const nodeId = setupReward();
+		if (!nodeId) return;
+		useRunStore.getState().completeReward();
+		expect(useRunStore.getState().visitedNodeIds).toContain(nodeId);
+	});
+
+	it("adds gold to playerSnapshot", () => {
+		const nodeId = setupReward();
+		if (!nodeId) return;
+		const goldBefore = useRunStore.getState().playerSnapshot.gold;
+		const pendingGold = useRunStore.getState().pendingReward?.gold ?? 0;
+		useRunStore.getState().completeReward();
+		expect(useRunStore.getState().playerSnapshot.gold).toBe(goldBefore + pendingGold);
+	});
+
+	it("adds picked card to deckCardIds", () => {
+		const nodeId = setupReward();
+		if (!nodeId) return;
+		const deckBefore = useRunStore.getState().playerSnapshot.deckCardIds;
+		const choices = useRunStore.getState().pendingReward?.cardChoices ?? [];
+		const pick = choices[0];
+		if (!pick) return;
+		useRunStore.getState().completeReward(pick);
+		const deckAfter = useRunStore.getState().playerSnapshot.deckCardIds;
+		expect(deckAfter.length).toBe(deckBefore.length + 1);
+		expect(deckAfter).toContain(pick);
+	});
+
+	it("skip: does not add a card when called without argument", () => {
+		const nodeId = setupReward();
+		if (!nodeId) return;
+		const deckBefore = useRunStore.getState().playerSnapshot.deckCardIds;
+		useRunStore.getState().completeReward();
+		expect(useRunStore.getState().playerSnapshot.deckCardIds.length).toBe(deckBefore.length);
+	});
+
+	it("clears pendingReward after completion", () => {
+		const nodeId = setupReward();
+		if (!nodeId) return;
+		useRunStore.getState().completeReward();
+		expect(useRunStore.getState().pendingReward).toBeNull();
+	});
+});

@@ -8,6 +8,7 @@ import { CombatScene } from "@ui/scenes/CombatScene.tsx";
 import { DevMapScene } from "@ui/scenes/DevMapScene.tsx";
 import { DevMenu } from "@ui/scenes/DevMenu.tsx";
 import { MapScene } from "@ui/scenes/MapScene.tsx";
+import { RewardScreen } from "@ui/scenes/RewardScreen.tsx";
 import { RunCombatAdapter } from "@ui/scenes/RunCombatAdapter.tsx";
 import { useEffect, useState } from "react";
 
@@ -44,6 +45,7 @@ function RunContainer({ onEndRun }: { readonly onEndRun: () => void }) {
 	const runStatus = useRunStore((s) => s.status);
 	if (runStatus === "in_combat") return <RunCombatAdapter />;
 	if (runStatus === "in_campfire") return <CampfireScene />;
+	if (runStatus === "in_reward") return <RewardScreen />;
 	return <MapScene onEndRun={onEndRun} />;
 }
 

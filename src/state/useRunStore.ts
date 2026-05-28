@@ -3,6 +3,8 @@ import type { SerializedDungeonMap } from "@core/dungeon/schema.ts";
 import { serializeDungeonMap } from "@core/dungeon/schema.ts";
 import type { NodeId } from "@core/dungeon/types.ts";
 import { asNodeId } from "@core/dungeon/types.ts";
+import type { CombatTier, RewardData } from "@core/rewards/reward-generator.ts";
+import { generateCardReward, generateRewardGold } from "@core/rewards/reward-generator.ts";
 import { Rng } from "@core/rng/rng.ts";
 import type { PlayerSnapshot, RunStatus, StarterName } from "@core/run/types.ts";
 import { create } from "zustand";
@@ -21,6 +23,7 @@ interface RunStoreState {
 	readonly visitedNodeIds: readonly string[]; // NodeId[] as strings
 	readonly nodeEncounters: Readonly<Record<string, string>>; // NodeId → EnemyId
 	readonly playerSnapshot: PlayerSnapshot;
+	readonly pendingReward: RewardData | null;
 	readonly status: RunStatus;
 }
 
@@ -29,6 +32,8 @@ interface RunStoreActions {
 	travelToNode(nodeId: NodeId): void;
 	returnToMap(outcome: { finalHp?: number; goldDelta?: number; newCardId?: string }): void;
 	completeCampfire(updatedPlayer: PlayerSnapshot): void;
+	startReward(finalHp: number): void;
+	completeReward(pickedCardId?: string): void;
 	endRun(result: "victory" | "defeat"): void;
 	clearRun(): void;
 }
@@ -144,6 +149,7 @@ const INITIAL_STATE: RunStoreState = {
 	visitedNodeIds: [],
 	nodeEncounters: {},
 	playerSnapshot: DEFAULT_SNAPSHOT,
+	pendingReward: null,
 	status: "in_map",
 };
 
@@ -229,6 +235,63 @@ export const useRunStore = create<RunStoreState & RunStoreActions>()(
 				});
 			},
 
+			startReward(finalHp) {
+				const { currentNodeId, serializedMap, seed, starterId, playerSnapshot } = get();
+				if (!currentNodeId || !serializedMap || !starterId) return;
+
+				const node = serializedMap.nodes.find((n) => n.id === currentNodeId);
+				if (!node) return;
+
+				const tierMap: Record<string, CombatTier> = {
+					combat: "normal",
+					elite: "elite",
+					boss: "boss",
+				};
+				const tier: CombatTier = tierMap[node.type] ?? "normal";
+
+				// Deterministic seed derived from run seed + node id hash
+				const nodeHash = currentNodeId
+					.split("")
+					.reduce((acc, ch) => ((acc * 31 + ch.charCodeAt(0)) | 0) >>> 0, 0);
+				const rewardSeed = (seed ^ nodeHash) >>> 0;
+				const rng = new Rng(rewardSeed);
+
+				const gold = generateRewardGold(tier, rng);
+				const cardChoices = generateCardReward(starterId, tier, rng);
+
+				const reward: RewardData = { gold, cardChoices, tier, relicChoice: null };
+
+				set({
+					playerSnapshot: {
+						...playerSnapshot,
+						currentHp: Math.min(finalHp, playerSnapshot.maxHp),
+					},
+					pendingReward: reward,
+					status: "in_reward",
+				});
+			},
+
+			completeReward(pickedCardId) {
+				const { currentNodeId, visitedNodeIds, playerSnapshot, pendingReward } = get();
+				if (!currentNodeId || !pendingReward) return;
+
+				const newGold = playerSnapshot.gold + pendingReward.gold;
+				const newDeck = pickedCardId
+					? [...playerSnapshot.deckCardIds, pickedCardId]
+					: playerSnapshot.deckCardIds;
+
+				set({
+					visitedNodeIds: [...visitedNodeIds, currentNodeId],
+					playerSnapshot: {
+						...playerSnapshot,
+						gold: newGold,
+						deckCardIds: newDeck,
+					},
+					pendingReward: null,
+					status: "in_map",
+				});
+			},
+
 			endRun(result) {
 				set({ status: result });
 			},
@@ -238,11 +301,12 @@ export const useRunStore = create<RunStoreState & RunStoreActions>()(
 			},
 		}),
 		{
-			name: "pmd-run-v2",
-			version: 2,
+			name: "pmd-run-v3",
+			version: 3,
 			migrate: (_persisted, _version) => INITIAL_STATE,
 			onRehydrateStorage: () => (state) => {
-				// Refresh mid-combat or mid-campfire: reset to map so player re-enters the room
+				// Refresh mid-combat or mid-campfire: reset to map so player re-enters the room.
+				// in_reward is intentionally preserved so the same reward appears after refresh.
 				if (state && (state.status === "in_combat" || state.status === "in_campfire")) {
 					state.status = "in_map";
 				}

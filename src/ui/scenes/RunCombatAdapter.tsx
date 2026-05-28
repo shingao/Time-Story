@@ -16,8 +16,8 @@ export function RunCombatAdapter() {
 		})),
 	);
 
-	const { returnToMap, endRun } = useRunStore(
-		useShallow((s) => ({ returnToMap: s.returnToMap, endRun: s.endRun })),
+	const { startReward, endRun } = useRunStore(
+		useShallow((s) => ({ startReward: s.startReward, endRun: s.endRun })),
 	);
 
 	const initCombat = useCombatStore((s) => s.initCombat);
@@ -44,8 +44,8 @@ export function RunCombatAdapter() {
 	}, []); // empty array is intentional — mount-only init
 
 	const handleRunWin = (finalHp: number) => {
-		returnToMap({ finalHp });
-		// RunStore.status is now "in_map" — RunContainer re-renders MapScene automatically.
+		startReward(finalHp);
+		// RunStore.status is now "in_reward" — RunContainer renders RewardScreen.
 	};
 
 	const handleRunLose = () => {
